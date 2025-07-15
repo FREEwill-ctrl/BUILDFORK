@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TodoProvider()),
+        ChangeNotifierProvider(create: (_) => PomodoroProvider()),
       ],
       child: MaterialApp(
         title: AppConstants.appName,

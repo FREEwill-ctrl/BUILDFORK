@@ -133,3 +133,34 @@ class NotificationService {
   }
 }
 
+
+
+
+  Future<void> showPomodoroNotification({
+    required int id,
+    required String title,
+    required String body,
+  }) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'pomodoro_channel',
+      'Pomodoro Notifications',
+      channelDescription: 'Notifications for Pomodoro timer',
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true,
+      enableVibration: true,
+    );
+
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await _flutterLocalNotificationsPlugin.show(
+      id,
+      title,
+      body,
+      platformChannelSpecifics,
+    );
+  }
+
+

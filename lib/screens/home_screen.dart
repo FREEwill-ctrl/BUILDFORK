@@ -42,6 +42,13 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text(AppConstants.appName),
         actions: [
           IconButton(
+            icon: const Icon(Icons.timer),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PomodoroScreen()));
+            },
+            tooltip: 'Pomodoro Timer',
+          ),
+          IconButton(
             icon: Icon(_showStats ? Icons.visibility_off : Icons.visibility),
             onPressed: () {
               setState(() {
