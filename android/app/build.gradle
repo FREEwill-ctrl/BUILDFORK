@@ -36,7 +36,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.example.flutter_todo_app"
-    compileSdkVersion 34
+    compileSdkVersion 35
     ndkVersion flutter.ndkVersion
 
     compileOptions {

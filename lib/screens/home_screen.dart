@@ -9,6 +9,7 @@ import '../widgets/priority_chip.dart';
 import '../widgets/celebration_widget.dart';
 import 'add_task_screen.dart';
 import 'edit_task_screen.dart';
+import 'pomodoro_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

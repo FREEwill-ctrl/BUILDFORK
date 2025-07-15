@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/todo_provider.dart';
+import 'providers/pomodoro_provider.dart';
 import 'services/notification_service.dart';
 import 'screens/home_screen.dart';
 import 'utils/app_theme.dart';

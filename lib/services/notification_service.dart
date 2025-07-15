@@ -131,10 +131,6 @@ class NotificationService {
   Future<void> cancelTaskReminder(int todoId) async {
     await cancelNotification(todoId);
   }
-}
-
-
-
 
   Future<void> showPomodoroNotification({
     required int id,
@@ -162,5 +158,4 @@ class NotificationService {
       platformChannelSpecifics,
     );
   }
-
-
+}
