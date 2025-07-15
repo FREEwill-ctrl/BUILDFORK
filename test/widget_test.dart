@@ -8,7 +8,7 @@ void main() {
   setUpAll(() async {
     // Initialize services
     WidgetsFlutterBinding.ensureInitialized();
-    await DatabaseService().initialize();
+    await DatabaseService().database; // Access the getter to initialize
     await NotificationService().initialize();
   });
 
