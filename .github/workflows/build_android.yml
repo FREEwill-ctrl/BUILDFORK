@@ -39,13 +39,13 @@ jobs:
       run: flutter analyze
       
     - name: Format code
-        run: dart format .
+      run: dart format .
 
-      - name: Commit formatted files
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "style: auto format dart files"
-          branch: ${{ github.head_ref }}
+    - name: Commit formatted files
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "style: auto format dart files"
+        branch: ${{ github.head_ref }}
       
     - name: Run tests
       run: flutter test
