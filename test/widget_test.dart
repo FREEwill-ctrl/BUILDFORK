@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_todo_app/main.dart';
+import 'package:flutter_todo_app/services/database_service.dart';
+import 'package:flutter_todo_app/services/notification_service.dart';
 
 void main() {
+  setUpAll(() async {
+    // Initialize services
+    WidgetsFlutterBinding.ensureInitialized();
+    await DatabaseService().initialize();
+    await NotificationService().initialize();
+  });
+
   testWidgets('MyApp builds without crashing', (WidgetTester tester) async {
     await tester.pumpWidget(const MyApp());
     expect(find.byType(MaterialApp), findsOneWidget);
