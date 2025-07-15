@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_todo_app/main.dart';
 import 'package:flutter_todo_app/services/database_service.dart';
-import 'package:flutter_todo_app/services/notification_service.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'mock_notification_service.dart';
 
 void main() {
+  late MockNotificationService mockNotificationService;
+
   setUpAll(() async {
     // Initialize FFI
     sqfliteFfiInit();
@@ -15,7 +17,7 @@ void main() {
     // Initialize services
     WidgetsFlutterBinding.ensureInitialized();
     await DatabaseService().database;
-    await NotificationService().initialize();
+    mockNotificationService = MockNotificationService();
   });
 
   testWidgets('MyApp builds without crashing', (WidgetTester tester) async {
