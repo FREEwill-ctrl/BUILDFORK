@@ -23,8 +23,8 @@ class TaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isOverdue = todo.dueDate != null &&
-        todo.dueDate!.isBefore(DateTime.now()) &&
+    final isOverdue = todo.dueDate != null && 
+        todo.dueDate!.isBefore(DateTime.now()) && 
         !todo.isCompleted;
 
     return Card(
@@ -50,13 +50,13 @@ class TaskCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: todo.isCompleted
-                              ? AppConstants.successColor
+                          color: todo.isCompleted 
+                              ? AppConstants.successColor 
                               : theme.colorScheme.outline,
                           width: 2,
                         ),
-                        color: todo.isCompleted
-                            ? AppConstants.successColor
+                        color: todo.isCompleted 
+                            ? AppConstants.successColor 
                             : Colors.transparent,
                       ),
                       child: todo.isCompleted
@@ -68,9 +68,9 @@ class TaskCard extends StatelessWidget {
                           : null,
                     ),
                   ),
-
+                  
                   const SizedBox(width: AppConstants.paddingMedium),
-
+                  
                   // Title and Priority
                   Expanded(
                     child: Column(
@@ -79,11 +79,11 @@ class TaskCard extends StatelessWidget {
                         Text(
                           todo.title,
                           style: AppConstants.subheadingStyle.copyWith(
-                            color: todo.isCompleted
+                            color: todo.isCompleted 
                                 ? theme.colorScheme.onSurface.withOpacity(0.6)
                                 : theme.colorScheme.onSurface,
-                            decoration: todo.isCompleted
-                                ? TextDecoration.lineThrough
+                            decoration: todo.isCompleted 
+                                ? TextDecoration.lineThrough 
                                 : null,
                           ),
                         ),
@@ -99,8 +99,7 @@ class TaskCard extends StatelessWidget {
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color:
-                                      AppConstants.errorColor.withOpacity(0.1),
+                                  color: AppConstants.errorColor.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
@@ -118,7 +117,7 @@ class TaskCard extends StatelessWidget {
                       ],
                     ),
                   ),
-
+                  
                   // Action Buttons
                   PopupMenuButton<String>(
                     onSelected: (value) {
@@ -156,60 +155,65 @@ class TaskCard extends StatelessWidget {
                   ),
                 ],
               ),
-
+              
               // Description
               if (todo.description.isNotEmpty) ...[
                 const SizedBox(height: AppConstants.paddingSmall),
                 Text(
                   todo.description,
                   style: AppConstants.bodyStyle.copyWith(
-                    color: todo.isCompleted
+                    color: todo.isCompleted 
                         ? theme.colorScheme.onSurface.withOpacity(0.6)
                         : theme.colorScheme.onSurface.withOpacity(0.8),
-                    decoration:
-                        todo.isCompleted ? TextDecoration.lineThrough : null,
+                    decoration: todo.isCompleted 
+                        ? TextDecoration.lineThrough 
+                        : null,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
-
+              
               // Due Date and Created Date
-              const SizedBox(height: AppConstants.paddingSmall),
-              Row(
-                children: [
-                  if (todo.dueDate != null) ...[
-                    Icon(
-                      Icons.schedule,
-                      size: 16,
-                      color: isOverdue
-                          ? AppConstants.errorColor
-                          : theme.colorScheme.onSurface.withOpacity(0.6),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Due: ${DateFormat('MMM dd, yyyy').format(todo.dueDate!)}',
-                      style: AppConstants.captionStyle.copyWith(
-                        color: isOverdue
-                            ? AppConstants.errorColor
+              if (todo.dueDate != null || todo.createdAt != null) ...[
+                const SizedBox(height: AppConstants.paddingSmall),
+                Row(
+                  children: [
+                    if (todo.dueDate != null) ...[
+                      Icon(
+                        Icons.schedule,
+                        size: 16,
+                        color: isOverdue 
+                            ? AppConstants.errorColor 
                             : theme.colorScheme.onSurface.withOpacity(0.6),
                       ),
-                    ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Due: ${DateFormat('MMM dd, yyyy').format(todo.dueDate!)}',
+                        style: AppConstants.captionStyle.copyWith(
+                          color: isOverdue 
+                              ? AppConstants.errorColor 
+                              : theme.colorScheme.onSurface.withOpacity(0.6),
+                        ),
+                      ),
+                    ],
+                    if (todo.dueDate != null && todo.createdAt != null)
+                      const SizedBox(width: AppConstants.paddingMedium),
+                    if (todo.createdAt != null) ...[
+                      Icon(
+                        Icons.access_time,
+                        size: 16,
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Created: ${DateFormat('MMM dd').format(todo.createdAt)}',
+                        style: AppConstants.captionStyle,
+                      ),
+                    ],
                   ],
-                  if (todo.dueDate != null)
-                    const SizedBox(width: AppConstants.paddingMedium),
-                  Icon(
-                    Icons.access_time,
-                    size: 16,
-                    color: theme.colorScheme.onSurface.withOpacity(0.6),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Created: ${DateFormat('MMM dd').format(todo.createdAt)}',
-                    style: AppConstants.captionStyle,
-                  ),
-                ],
-              ),
+                ),
+              ],
             ],
           ),
         ),
@@ -242,13 +246,13 @@ class CompactTaskCard extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-              color: todo.isCompleted
-                  ? AppConstants.successColor
+              color: todo.isCompleted 
+                  ? AppConstants.successColor 
                   : theme.colorScheme.outline,
               width: 2,
             ),
-            color: todo.isCompleted
-                ? AppConstants.successColor
+            color: todo.isCompleted 
+                ? AppConstants.successColor 
                 : Colors.transparent,
           ),
           child: todo.isCompleted
@@ -264,19 +268,18 @@ class CompactTaskCard extends StatelessWidget {
         todo.title,
         style: TextStyle(
           decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
-          color: todo.isCompleted
+          color: todo.isCompleted 
               ? theme.colorScheme.onSurface.withOpacity(0.6)
               : theme.colorScheme.onSurface,
         ),
       ),
-      subtitle: todo.description.isNotEmpty
+      subtitle: todo.description.isNotEmpty 
           ? Text(
               todo.description,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                decoration:
-                    todo.isCompleted ? TextDecoration.lineThrough : null,
+                decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
               ),
             )
           : null,
@@ -284,3 +287,4 @@ class CompactTaskCard extends StatelessWidget {
     );
   }
 }
+

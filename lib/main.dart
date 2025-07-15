@@ -7,10 +7,10 @@ import 'utils/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  
   // Initialize notification service
   await NotificationService().initialize();
-
+  
   runApp(const MyApp());
 }
 
@@ -34,3 +34,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+

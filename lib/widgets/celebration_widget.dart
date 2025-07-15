@@ -109,9 +109,9 @@ class _CelebrationWidgetState extends State<CelebrationWidget>
                           height: 120,
                           fit: BoxFit.contain,
                         ),
-
+                        
                         const SizedBox(height: AppConstants.paddingMedium),
-
+                        
                         // Congratulations Text
                         Text(
                           'Congratulations!',
@@ -120,9 +120,9 @@ class _CelebrationWidgetState extends State<CelebrationWidget>
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-
+                        
                         const SizedBox(height: AppConstants.paddingSmall),
-
+                        
                         Text(
                           'Task completed successfully!',
                           style: AppConstants.bodyStyle.copyWith(
@@ -130,9 +130,9 @@ class _CelebrationWidgetState extends State<CelebrationWidget>
                           ),
                           textAlign: TextAlign.center,
                         ),
-
+                        
                         const SizedBox(height: AppConstants.paddingMedium),
-
+                        
                         // Dismiss Button
                         TextButton(
                           onPressed: _dismiss,
@@ -168,3 +168,4 @@ void showCelebration(BuildContext context) {
     ),
   );
 }
+

@@ -1,19 +1,12 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
-import '../models/todo_model.dart' hide Priority;
+import '../models/todo_model.dart';
 
 class NotificationService {
-  static NotificationService? _instance;
-  factory NotificationService() {
-    _instance ??= NotificationService._internal();
-    return _instance!;
-  }
+  static final NotificationService _instance = NotificationService._internal();
+  factory NotificationService() => _instance;
   NotificationService._internal();
-
-  static void setInstance(NotificationService instance) {
-    _instance = instance;
-  }
 
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -64,7 +57,7 @@ class NotificationService {
       body,
       tz.TZDateTime.from(scheduledDate, tz.local),
       platformChannelSpecifics,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
     );
@@ -74,7 +67,7 @@ class NotificationService {
     if (todo.dueDate != null && todo.dueDate!.isAfter(DateTime.now())) {
       // Schedule notification 1 hour before due date
       final reminderTime = todo.dueDate!.subtract(const Duration(hours: 1));
-
+      
       if (reminderTime.isAfter(DateTime.now())) {
         await scheduleNotification(
           id: todo.id ?? 0,
@@ -119,3 +112,4 @@ class NotificationService {
     );
   }
 }
+

@@ -145,16 +145,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(width: AppConstants.paddingSmall),
                       // Priority filters
                       ...Priority.values.map((priority) => Padding(
-                            padding: const EdgeInsets.only(
-                                right: AppConstants.paddingSmall),
-                            child: PriorityChip(
-                              priority: priority,
-                              isSelected:
-                                  todoProvider.filterPriority == priority,
-                              onTap: () =>
-                                  todoProvider.filterByPriority(priority),
-                            ),
-                          )),
+                        padding: const EdgeInsets.only(right: AppConstants.paddingSmall),
+                        child: PriorityChip(
+                          priority: priority,
+                          isSelected: todoProvider.filterPriority == priority,
+                          onTap: () => todoProvider.filterByPriority(priority),
+                        ),
+                      )),
                     ],
                   ),
                 ),
@@ -177,11 +174,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             onToggleComplete: () {
                               final wasCompleted = todo.isCompleted;
                               todoProvider.toggleTodoComplete(todo);
-
+                              
                               // Show celebration if task was just completed
                               if (!wasCompleted && !todo.isCompleted) {
-                                Future.delayed(
-                                    const Duration(milliseconds: 300), () {
+                                Future.delayed(const Duration(milliseconds: 300), () {
                                   if (mounted) {
                                     showCelebration(context);
                                   }
@@ -189,8 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               }
                             },
                             onEdit: () => _editTask(context, todo),
-                            onDelete: () =>
-                                _deleteTask(context, todo, todoProvider),
+                            onDelete: () => _deleteTask(context, todo, todoProvider),
                           );
                         },
                       ),
@@ -209,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildEmptyState(BuildContext context) {
     final theme = Theme.of(context);
     final provider = context.read<TodoProvider>();
-
+    
     String message;
     String subtitle;
     String imagePath;
@@ -218,8 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
       message = 'No tasks found';
       subtitle = 'Try adjusting your search or filters';
       imagePath = 'assets/images/no_search_results.png';
-    } else if (provider.filterPriority != null ||
-        provider.filterCompleted != null) {
+    } else if (provider.filterPriority != null || provider.filterCompleted != null) {
       message = 'No tasks match your filters';
       subtitle = 'Try clearing filters or add new tasks';
       imagePath = 'assets/images/empty_tasks.png';
@@ -252,8 +246,8 @@ class _HomeScreenState extends State<HomeScreen> {
             style: AppConstants.captionStyle,
             textAlign: TextAlign.center,
           ),
-          if (provider.searchQuery.isNotEmpty ||
-              provider.filterPriority != null ||
+          if (provider.searchQuery.isNotEmpty || 
+              provider.filterPriority != null || 
               provider.filterCompleted != null) ...[
             const SizedBox(height: AppConstants.paddingMedium),
             ElevatedButton(
@@ -365,7 +359,7 @@ class _TaskDetailsSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    
     return Container(
       padding: const EdgeInsets.all(AppConstants.paddingMedium),
       child: Column(
@@ -382,9 +376,9 @@ class _TaskDetailsSheet extends StatelessWidget {
               ),
             ),
           ),
-
+          
           const SizedBox(height: AppConstants.paddingMedium),
-
+          
           // Title and Status
           Row(
             children: [
@@ -404,8 +398,7 @@ class _TaskDetailsSheet extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: AppConstants.successColor.withOpacity(0.1),
-                    borderRadius:
-                        BorderRadius.circular(AppConstants.borderRadiusSmall),
+                    borderRadius: BorderRadius.circular(AppConstants.borderRadiusSmall),
                   ),
                   child: Text(
                     'Completed',
@@ -418,9 +411,9 @@ class _TaskDetailsSheet extends StatelessWidget {
                 ),
             ],
           ),
-
+          
           const SizedBox(height: AppConstants.paddingMedium),
-
+          
           // Priority
           Row(
             children: [
@@ -428,9 +421,9 @@ class _TaskDetailsSheet extends StatelessWidget {
               PriorityChip(priority: todo.priority),
             ],
           ),
-
+          
           const SizedBox(height: AppConstants.paddingMedium),
-
+          
           // Description
           if (todo.description.isNotEmpty) ...[
             Text(
@@ -448,7 +441,7 @@ class _TaskDetailsSheet extends StatelessWidget {
             ),
             const SizedBox(height: AppConstants.paddingMedium),
           ],
-
+          
           // Dates
           if (todo.dueDate != null) ...[
             Row(
@@ -469,7 +462,7 @@ class _TaskDetailsSheet extends StatelessWidget {
             ),
             const SizedBox(height: AppConstants.paddingSmall),
           ],
-
+          
           Row(
             children: [
               Icon(
@@ -486,9 +479,9 @@ class _TaskDetailsSheet extends StatelessWidget {
               ),
             ],
           ),
-
+          
           const Spacer(),
-
+          
           // Action Buttons
           Row(
             children: [
@@ -518,3 +511,4 @@ class _TaskDetailsSheet extends StatelessWidget {
     );
   }
 }
+

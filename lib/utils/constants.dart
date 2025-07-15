@@ -62,8 +62,7 @@ class AppConstants {
   // Notification
   static const String notificationChannelId = 'todo_channel';
   static const String notificationChannelName = 'Todo Notifications';
-  static const String notificationChannelDescription =
-      'Notifications for todo reminders';
+  static const String notificationChannelDescription = 'Notifications for todo reminders';
 }
 
 class AppTheme {
@@ -137,3 +136,4 @@ class AppTheme {
     ),
   );
 }
+

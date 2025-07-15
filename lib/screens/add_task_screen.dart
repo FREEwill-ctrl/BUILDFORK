@@ -16,7 +16,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
-
+  
   Priority _selectedPriority = Priority.medium;
   DateTime? _selectedDueDate;
   bool _isLoading = false;
@@ -165,18 +165,14 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             style: AppConstants.bodyStyle.copyWith(
                               color: _selectedDueDate != null
                                   ? Theme.of(context).colorScheme.onSurface
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withOpacity(0.6),
+                                  : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                             ),
                           ),
                         ),
                         TextButton.icon(
                           onPressed: _selectDueDate,
                           icon: const Icon(Icons.calendar_today),
-                          label: Text(
-                              _selectedDueDate != null ? 'Change' : 'Set Date'),
+                          label: Text(_selectedDueDate != null ? 'Change' : 'Set Date'),
                         ),
                         if (_selectedDueDate != null)
                           IconButton(
@@ -242,8 +238,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   Future<void> _selectDueDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate:
-          _selectedDueDate ?? DateTime.now().add(const Duration(days: 1)),
+      initialDate: _selectedDueDate ?? DateTime.now().add(const Duration(days: 1)),
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
       helpText: 'Select due date',
@@ -332,3 +327,4 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
   }
 }
+
