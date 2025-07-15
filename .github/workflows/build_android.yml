@@ -38,8 +38,14 @@ jobs:
     - name: Run analyzer
       run: flutter analyze
       
-    - name: Check formatting
-      run: dart format --output=none --set-exit-if-changed .
+    - name: Format code
+      run: dart format .
+      
+      - name: Commit formatted files
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "style: auto format dart files"
+          branch: ${{ github.head_ref }}
       
     - name: Run tests
       run: flutter test
