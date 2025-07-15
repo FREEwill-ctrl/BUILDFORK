@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_todo_app/utils/constants.dart';
 
 class AppTheme {
   static final ThemeData lightTheme = ThemeData(
@@ -18,11 +17,11 @@ class AppTheme {
   static final ThemeData darkTheme = ThemeData(
     primarySwatch: Colors.blueGrey,
     brightness: Brightness.dark,
-    appBarTheme: const AppBarTheme(
+    appBarTheme: AppBarTheme(
       backgroundColor: Colors.blueGrey[800],
       foregroundColor: Colors.white,
     ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: Colors.blueGrey[700],
     ),
     // Add more dark theme properties as needed
