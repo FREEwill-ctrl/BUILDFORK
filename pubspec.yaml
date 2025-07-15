@@ -16,7 +16,7 @@ dependencies:
   path_provider: ^2.1.5 # Updated from 2.0.11
   intl: ^0.20.2 # Updated from 0.18.1
   provider: ^6.1.5 # Updated from 6.0.5
-  flutter_local_notifications: ^16.3.3 # Updated from 16.1.0
+  flutter_local_notifications: ^17.2.1
   flutter_timezone: ^4.1.1 # Updated from 1.0.8
 
 dev_dependencies:
@@ -33,4 +33,7 @@ flutter:
 
 
 
+
+
+  logger: ^2.0.2
 
