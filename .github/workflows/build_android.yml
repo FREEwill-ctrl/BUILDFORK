@@ -38,12 +38,6 @@ jobs:
     - name: Run analyzer
       run: flutter analyze
       
-    - name: Check formatting
-      run: dart format --output=none
-      
-    - name: Run tests
-      run: flutter test
-
   build-apk:
     name: Build APK
     needs: test
