@@ -3,12 +3,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_todo_app/main.dart';
 import 'package:flutter_todo_app/services/database_service.dart';
 import 'package:flutter_todo_app/services/notification_service.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
   setUpAll(() async {
+    // Initialize FFI
+    sqfliteFfiInit();
+    // Change the default factory for unit testing
+    databaseFactory = databaseFactoryFfi;
+
     // Initialize services
     WidgetsFlutterBinding.ensureInitialized();
-    await DatabaseService().database; // Access the getter to initialize
+    await DatabaseService().database;
     await NotificationService().initialize();
   });
 
