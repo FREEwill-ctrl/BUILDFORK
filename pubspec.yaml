@@ -25,7 +25,7 @@ dev_dependencies:
     sdk: flutter
   sqflite_common_ffi: ^2.3.0
   mockito: ^5.4.4
-  build_runner: ^2.4.11
+  build_runner: ^2.4.9
   flutter_lints: ^2.0.0
 
 flutter:
