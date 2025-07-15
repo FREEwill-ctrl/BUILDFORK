@@ -11,18 +11,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.8 # Updated from 1.0.2
   sqflite: ^2.3.0
-  path_provider: ^2.0.11
-  intl: ^0.18.1
-  provider: ^6.0.5
-  flutter_local_notifications: ^16.1.0
-  flutter_timezone: ^1.0.8 # Using the maintained fork
+  path_provider: ^2.1.5 # Updated from 2.0.11
+  intl: ^0.20.2 # Updated from 0.18.1
+  provider: ^6.1.5 # Updated from 6.0.5
+  flutter_local_notifications: ^16.3.3 # Updated from 16.1.0
+  flutter_timezone: ^4.1.1 # Updated from 1.0.8
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^6.0.0 # Updated from 2.0.0
 
 flutter:
   uses-material-design: true
@@ -30,5 +30,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+
+
 
 
