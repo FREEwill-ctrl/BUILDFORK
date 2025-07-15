@@ -19,6 +19,9 @@ void main() {
     WidgetsFlutterBinding.ensureInitialized();
     await DatabaseService().database;
     mockNotificationService = MockNotificationService();
+
+    // Call main with the mocked notification service
+    main(notificationService: mockNotificationService);
   });
 
   testWidgets('MyApp builds without crashing', (WidgetTester tester) async {
