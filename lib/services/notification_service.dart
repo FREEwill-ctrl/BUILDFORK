@@ -1,7 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
-import '../models/todo_model.dart';
+import '../models/todo_model.dart' as todo_model;
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -13,7 +13,7 @@ class NotificationService {
 
   Future<void> initialize() async {
     tz.initializeTimeZones();
-
+    
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -24,13 +24,19 @@ class NotificationService {
 
     await _flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
+      onDidReceiveNotificationResponse: (NotificationResponse response) async {
+        // Handle notification tap
+      },
     );
   }
 
-  void _onDidReceiveNotificationResponse(NotificationResponse response) {
-    // Handle notification tap
-    print('Notification tapped: ${response.payload}');
+  Future<void> requestPermissions() async {
+    final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+        _flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+
+    await androidImplementation?.requestNotificationsPermission();
+    await androidImplementation?.requestExactAlarmsPermission();
   }
 
   Future<void> scheduleNotification({
@@ -57,26 +63,10 @@ class NotificationService {
       body,
       tz.TZDateTime.from(scheduledDate, tz.local),
       platformChannelSpecifics,
-      androidAllowWhileIdle: true,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
     );
-  }
-
-  Future<void> scheduleTaskReminder(Todo todo) async {
-    if (todo.dueDate != null && todo.dueDate!.isAfter(DateTime.now())) {
-      // Schedule notification 1 hour before due date
-      final reminderTime = todo.dueDate!.subtract(const Duration(hours: 1));
-      
-      if (reminderTime.isAfter(DateTime.now())) {
-        await scheduleNotification(
-          id: todo.id ?? 0,
-          title: 'Task Reminder',
-          body: 'Task "${todo.title}" is due in 1 hour',
-          scheduledDate: reminderTime,
-        );
-      }
-    }
   }
 
   Future<void> cancelNotification(int id) async {
@@ -110,6 +100,36 @@ class NotificationService {
       body,
       platformChannelSpecifics,
     );
+  }
+
+  String _getPriorityText(todo_model.Priority priority) {
+    switch (priority) {
+      case todo_model.Priority.high:
+        return 'High Priority';
+      case todo_model.Priority.medium:
+        return 'Medium Priority';
+      case todo_model.Priority.low:
+        return 'Low Priority';
+    }
+  }
+
+  Future<void> scheduleTaskReminder(todo_model.Todo todo) async {
+    if (todo.dueDate != null && todo.dueDate!.isAfter(DateTime.now())) {
+      final reminderTime = todo.dueDate!.subtract(const Duration(hours: 1));
+      
+      if (reminderTime.isAfter(DateTime.now())) {
+        await scheduleNotification(
+          id: todo.id ?? 0,
+          title: '${_getPriorityText(todo.priority)} Task Reminder',
+          body: 'Don\'t forget: ${todo.title}',
+          scheduledDate: reminderTime,
+        );
+      }
+    }
+  }
+
+  Future<void> cancelTaskReminder(int todoId) async {
+    await cancelNotification(todoId);
   }
 }
 
