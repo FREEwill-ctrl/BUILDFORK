@@ -175,45 +175,41 @@ class TaskCard extends StatelessWidget {
               ],
               
               // Due Date and Created Date
-              if (todo.dueDate != null || todo.createdAt != null) ...[
-                const SizedBox(height: AppConstants.paddingSmall),
-                Row(
-                  children: [
-                    if (todo.dueDate != null) ...[
-                      Icon(
-                        Icons.schedule,
-                        size: 16,
+              const SizedBox(height: AppConstants.paddingSmall),
+              Row(
+                children: [
+                  if (todo.dueDate != null) ...[
+                    Icon(
+                      Icons.schedule,
+                      size: 16,
+                      color: isOverdue 
+                          ? AppConstants.errorColor 
+                          : theme.colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Due: ${DateFormat('MMM dd, yyyy').format(todo.dueDate!)}',
+                      style: AppConstants.captionStyle.copyWith(
                         color: isOverdue 
                             ? AppConstants.errorColor 
                             : theme.colorScheme.onSurface.withOpacity(0.6),
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Due: ${DateFormat('MMM dd, yyyy').format(todo.dueDate!)}',
-                        style: AppConstants.captionStyle.copyWith(
-                          color: isOverdue 
-                              ? AppConstants.errorColor 
-                              : theme.colorScheme.onSurface.withOpacity(0.6),
-                        ),
-                      ),
-                    ],
-                    if (todo.dueDate != null && todo.createdAt != null)
-                      const SizedBox(width: AppConstants.paddingMedium),
-                    if (todo.createdAt != null) ...[
-                      Icon(
-                        Icons.access_time,
-                        size: 16,
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Created: ${DateFormat('MMM dd').format(todo.createdAt)}',
-                        style: AppConstants.captionStyle,
-                      ),
-                    ],
+                    ),
                   ],
-                ),
-              ],
+                  if (todo.dueDate != null)
+                    const SizedBox(width: AppConstants.paddingMedium),
+                  Icon(
+                    Icons.access_time,
+                    size: 16,
+                    color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Created: ${DateFormat('MMM dd').format(todo.createdAt)}',
+                    style: AppConstants.captionStyle,
+                  ),
+                ],
+              ),
             ],
           ),
         ),
