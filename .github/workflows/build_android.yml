@@ -66,8 +66,7 @@ jobs:
     - name: Build APK (Debug)
       run: flutter build apk --debug
       
-    - name: Build APK (Release)
-      run: flutter build apk --release
+
       
     - name: Upload Debug APK
       uses: actions/upload-artifact@v4
@@ -76,104 +75,15 @@ jobs:
         path: build/app/outputs/flutter-apk/app-debug.apk
         retention-days: 30
         
-    - name: Upload Release APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: release-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
-        retention-days: 30
 
-  build-aab:
-    name: Build Android App Bundle
-    needs: test
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: '17'
-        
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.16.0'
-        channel: 'stable'
-        cache: true
-        
-    - name: Get dependencies
-      run: flutter pub get
-      
-    - name: Build AAB (Release)
-      run: flutter build appbundle --release
-      
-    - name: Upload AAB
-      uses: actions/upload-artifact@v4
-      with:
-        name: release-aab
-        path: build/app/outputs/bundle/release/app-release.aab
-        retention-days: 30
 
-  build-signed-apk:
-    name: Build Signed APK
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: '17'
-        
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.16.0'
-        channel: 'stable'
-        cache: true
-        
-    - name: Get dependencies
-      run: flutter pub get
-      
-    # Note: For production signing, you would need to:
-    # 1. Create a keystore file
-    # 2. Add keystore secrets to GitHub repository secrets
-    # 3. Configure key.properties file
-    # 4. Uncomment and configure the signing steps below
-    
-    - name: Decode keystore
-      run: |
-        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
-        
-    - name: Create key.properties
-      run: |
-        echo "storePassword=${{ secrets.STORE_PASSWORD }}" > android/key.properties
-        echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
-        echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
-        echo "storeFile=keystore.jks" >> android/key.properties
-    
-    - name: Build Signed APK
-      run: flutter build apk --release
-      
-    - name: Upload Signed APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: signed-release-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
-        retention-days: 90
+
+
+
 
   create-release:
     name: Create Release
-    needs: [build-apk, build-aab, build-signed-apk]
+    needs: [build-apk]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
@@ -181,23 +91,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Download APK artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: release-apk
-        path: ./artifacts/
+
         
-    - name: Download AAB artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: release-aab
-        path: ./artifacts/
+
         
-    - name: Download Signed APK artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: signed-release-apk
-        path: ./artifacts/
+
         
     - name: Get current date
       id: date
@@ -238,41 +136,33 @@ jobs:
         draft: false
         prerelease: false
         
-    - name: Upload Release APK
+    - name: Upload Debug APK
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./artifacts/app-release.apk
-        asset_name: flutter-todo-app-v1.0.${{ github.run_number }}.apk
+        asset_path: ./artifacts/app-debug.apk
+        asset_name: flutter-todo-app-debug-v1.0.${{ github.run_number }}.apk
         asset_content_type: application/vnd.android.package-archive
         
-    - name: Upload Release AAB
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./artifacts/app-release.aab
-        asset_name: flutter-todo-app-v1.0.${{ github.run_number }}.aab
-        asset_content_type: application/octet-stream
+
 
   notify:
     name: Notify Build Status
-    needs: [build-apk, build-aab]
+    needs: [build-apk]
     runs-on: ubuntu-latest
     if: always()
     
     steps:
     - name: Notify Success
-      if: needs.build-apk.result == 'success' && needs.build-aab.result == 'success'
+      if: needs.build-apk.result == 'success'
       run: |
         echo "✅ Build completed successfully!"
         echo "APK and AAB files are ready for download."
         
     - name: Notify Failure
-      if: needs.build-apk.result == 'failure' || needs.build-aab.result == 'failure'
+      if: needs.build-apk.result == 'failure'
       run: |
         echo "❌ Build failed!"
         echo "Please check the logs for more details."
