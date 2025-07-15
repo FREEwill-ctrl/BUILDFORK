@@ -21,7 +21,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
-  
+
   late Priority _selectedPriority;
   DateTime? _selectedDueDate;
   late bool _isCompleted;
@@ -31,7 +31,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.todo.title);
-    _descriptionController = TextEditingController(text: widget.todo.description);
+    _descriptionController =
+        TextEditingController(text: widget.todo.description);
     _selectedPriority = widget.todo.priority;
     _selectedDueDate = widget.todo.dueDate;
     _isCompleted = widget.todo.isCompleted;
@@ -74,9 +75,11 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                 child: Row(
                   children: [
                     Icon(
-                      _isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
-                      color: _isCompleted 
-                          ? AppConstants.successColor 
+                      _isCompleted
+                          ? Icons.check_circle
+                          : Icons.radio_button_unchecked,
+                      color: _isCompleted
+                          ? AppConstants.successColor
                           : Theme.of(context).colorScheme.primary,
                     ),
                     const SizedBox(width: AppConstants.paddingMedium),
@@ -217,14 +220,18 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                             style: AppConstants.bodyStyle.copyWith(
                               color: _selectedDueDate != null
                                   ? Theme.of(context).colorScheme.onSurface
-                                  : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withOpacity(0.6),
                             ),
                           ),
                         ),
                         TextButton.icon(
                           onPressed: _selectDueDate,
                           icon: const Icon(Icons.calendar_today),
-                          label: Text(_selectedDueDate != null ? 'Change' : 'Set Date'),
+                          label: Text(
+                              _selectedDueDate != null ? 'Change' : 'Set Date'),
                         ),
                         if (_selectedDueDate != null)
                           IconButton(
@@ -273,7 +280,10 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                         Icon(
                           Icons.access_time,
                           size: 16,
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.6),
                         ),
                         const SizedBox(width: AppConstants.paddingSmall),
                         Text(
@@ -289,7 +299,10 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                           Icon(
                             Icons.tag,
                             size: 16,
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withOpacity(0.6),
                           ),
                           const SizedBox(width: AppConstants.paddingSmall),
                           Text(
@@ -366,7 +379,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   Future<void> _selectDueDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDueDate ?? DateTime.now().add(const Duration(days: 1)),
+      initialDate:
+          _selectedDueDate ?? DateTime.now().add(const Duration(days: 1)),
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
       helpText: 'Select due date',
@@ -378,7 +392,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
       // Show time picker
       final TimeOfDay? timePicked = await showTimePicker(
         context: context,
-        initialTime: _selectedDueDate != null 
+        initialTime: _selectedDueDate != null
             ? TimeOfDay.fromDateTime(_selectedDueDate!)
             : TimeOfDay.now(),
         helpText: 'Select due time',
@@ -462,7 +476,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Task'),
-        content: Text('Are you sure you want to delete "${widget.todo.title}"?'),
+        content:
+            Text('Are you sure you want to delete "${widget.todo.title}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -517,4 +532,3 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     }
   }
 }
-

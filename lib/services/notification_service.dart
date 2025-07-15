@@ -67,7 +67,7 @@ class NotificationService {
     if (todo.dueDate != null && todo.dueDate!.isAfter(DateTime.now())) {
       // Schedule notification 1 hour before due date
       final reminderTime = todo.dueDate!.subtract(const Duration(hours: 1));
-      
+
       if (reminderTime.isAfter(DateTime.now())) {
         await scheduleNotification(
           id: todo.id ?? 0,
@@ -112,4 +112,3 @@ class NotificationService {
     );
   }
 }
-
