@@ -19,9 +19,7 @@ void main() {
     WidgetsFlutterBinding.ensureInitialized();
     await DatabaseService().database;
     mockNotificationService = MockNotificationService();
-
-    // Call main with the mocked notification service
-    main(notificationService: mockNotificationService);
+    NotificationService.setInstance(mockNotificationService);
   });
 
   testWidgets('MyApp builds without crashing', (WidgetTester tester) async {
@@ -29,7 +27,6 @@ void main() {
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => TodoProvider()),
-          Provider<NotificationService>.value(value: mockNotificationService),
         ],
         child: const MyApp(),
       ),

@@ -4,9 +4,16 @@ import 'package:timezone/data/latest.dart' as tz;
 import '../models/todo_model.dart' hide Priority;
 
 class NotificationService {
-  static final NotificationService _instance = NotificationService._internal();
-  factory NotificationService() => _instance;
+  static NotificationService? _instance;
+  factory NotificationService() {
+    _instance ??= NotificationService._internal();
+    return _instance!;
+  }
   NotificationService._internal();
+
+  static void setInstance(NotificationService instance) {
+    _instance = instance;
+  }
 
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
