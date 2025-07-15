@@ -22,6 +22,11 @@ jobs:
         # Accept Android licenses
         yes | sdkmanager --licenses
 
+    - name: Add Android properties for compatibility
+      run: |
+        echo "android.useAndroidX=true" >> android/gradle.properties
+        echo "android.enableJetifier=true" >> android/gradle.properties
+
     - name: Get Flutter dependencies
       run: flutter pub get
 
