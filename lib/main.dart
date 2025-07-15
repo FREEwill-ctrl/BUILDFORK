@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'providers/todo_provider.dart';
 import 'services/notification_service.dart';
 import 'screens/home_screen.dart';
-import 'utils/constants.dart';
+import 'utils/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
