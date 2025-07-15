@@ -16,11 +16,13 @@ jobs:
         channel: 'stable'
 
     - name: Install Android SDK Build-Tools
-      run: | 
-        sudo apt-get update
-        sudo apt-get install -y android-sdk-build-tools
-        # Accept Android licenses
-        yes | sdkmanager --licenses
+      uses: android-actions/setup-android@v2
+      with:
+        api-level: 34
+        build-tools: 34.0.0
+        ndk: 25.1.8937393 # Optional, specify if needed
+        # Accept Android licenses is handled by setup-android action
+
 
     - name: Add Android properties for compatibility
       run: |
