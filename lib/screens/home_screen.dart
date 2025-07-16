@@ -255,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _addTask(context),
-        child: Image.asset('assets/icons/add.png', width: 24, height: 24),
+        child: const Icon(Icons.add),
       ),
     );
   }

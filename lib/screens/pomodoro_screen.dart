@@ -22,6 +22,41 @@ class PomodoroScreen extends StatelessWidget {
                   pomodoroProvider.formattedTime,
                   style: const TextStyle(fontSize: 80, fontWeight: FontWeight.bold),
                 ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      CircularProgressIndicator(
+                        value: 1 - pomodoroProvider.secondsRemaining /
+                          (pomodoroProvider.sessionType == SessionType.pomodoro
+                            ? 25 * 60
+                            : pomodoroProvider.sessionType == SessionType.shortBreak
+                              ? 5 * 60
+                              : 15 * 60),
+                        strokeWidth: 8,
+                        backgroundColor: Colors.grey.shade300,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          pomodoroProvider.sessionType == SessionType.pomodoro
+                            ? AppConstants.primaryColor
+                            : pomodoroProvider.sessionType == SessionType.shortBreak
+                              ? AppConstants.successColor
+                              : AppConstants.warningColor,
+                        ),
+                      ),
+                      Text(
+                        pomodoroProvider.sessionType == SessionType.pomodoro
+                          ? 'Focus'
+                          : pomodoroProvider.sessionType == SessionType.shortBreak
+                            ? 'Break'
+                            : 'Long Break',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: AppConstants.paddingLarge),
                 Text(
                   'Session: ${pomodoroProvider.sessionType.toString().split('.').last}',
