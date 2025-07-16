@@ -134,6 +134,7 @@ class NotificationService {
       channelDescription: 'Notifications for Pomodoro timer',
       importance: fln.Importance.max,
       priority: fln.Priority.high,
+      sound: const fln.RawResourceAndroidNotificationSound('notification'),
     );
 
     final fln.NotificationDetails platformChannelSpecifics =
