@@ -8,6 +8,7 @@ import 'utils/constants.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'screens/add_task_screen.dart';
 import 'screens/pomodoro_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -28,9 +29,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+
   @override
   void initState() {
     super.initState();
+    _loadThemeMode();
     final quickActions = QuickActions();
     quickActions.setShortcutItems(<ShortcutItem>[
       const ShortcutItem(type: 'add_task', localizedTitle: 'Add Task', icon: 'add'),
@@ -49,6 +53,29 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future<void> _loadThemeMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final mode = prefs.getString('theme_mode') ?? 'system';
+    setState(() {
+      if (mode == 'light') {
+        _themeMode = ThemeMode.light;
+      } else if (mode == 'dark') {
+        _themeMode = ThemeMode.dark;
+      } else {
+        _themeMode = ThemeMode.system;
+      }
+    });
+  }
+
+  Future<void> setThemeMode(ThemeMode mode) async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _themeMode = mode;
+    });
+    await prefs.setString('theme_mode',
+        mode == ThemeMode.light ? 'light' : mode == ThemeMode.dark ? 'dark' : 'system');
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -62,8 +89,8 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system,
-        home: const HomeScreen(),
+        themeMode: _themeMode,
+        home: HomeScreen(onThemeModeChanged: setThemeMode, currentThemeMode: _themeMode),
       ),
     );
   }

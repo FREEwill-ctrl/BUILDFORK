@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/constants.dart';
+import 'package:provider/provider.dart';
+import '../providers/todo_provider.dart';
 
 class StatsCard extends StatelessWidget {
   final int totalTodos;
@@ -17,6 +19,9 @@ class StatsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final completionRate = totalTodos > 0 ? (completedTodos / totalTodos) : 0.0;
+    final todoProvider = Provider.of<TodoProvider>(context, listen: false);
+    final completedPerDay = todoProvider.completedPerDay;
+    final maxCompleted = completedPerDay.values.isNotEmpty ? completedPerDay.values.reduce((a, b) => a > b ? a : b) : 1;
 
     return Card(
       child: Padding(
@@ -105,6 +110,73 @@ class StatsCard extends StatelessWidget {
                 ),
               ],
             ),
+
+            const SizedBox(height: AppConstants.paddingMedium),
+
+            // Priority Distribution
+            Text('Priority Distribution', style: AppConstants.bodyStyle),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                _PriorityStat(
+                  label: 'Low',
+                  value: todoProvider.lowPriorityTodos,
+                  completed: todoProvider.completedLowPriority,
+                  color: AppConstants.lowPriorityColor,
+                ),
+                _PriorityStat(
+                  label: 'Medium',
+                  value: todoProvider.mediumPriorityTodos,
+                  completed: todoProvider.completedMediumPriority,
+                  color: AppConstants.mediumPriorityColor,
+                ),
+                _PriorityStat(
+                  label: 'High',
+                  value: todoProvider.highPriorityTodos,
+                  completed: todoProvider.completedHighPriority,
+                  color: AppConstants.highPriorityColor,
+                ),
+              ],
+            ),
+
+            const SizedBox(height: AppConstants.paddingMedium),
+
+            // Completion per Day (simple bar chart)
+            Text('Completed per Day (7 days)', style: AppConstants.bodyStyle),
+            const SizedBox(height: 8),
+            SizedBox(
+              height: 48,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: completedPerDay.entries.map((entry) {
+                  final percent = maxCompleted > 0 ? entry.value / maxCompleted : 0.0;
+                  return Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          height: 36 * percent,
+                          width: 12,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '${entry.key.month}/${entry.key.day}',
+                          style: AppConstants.captionStyle.copyWith(fontSize: 10),
+                        ),
+                        Text(
+                          '${entry.value}',
+                          style: AppConstants.captionStyle.copyWith(fontSize: 10),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
           ],
         ),
       ),
@@ -155,6 +227,25 @@ class _StatItem extends StatelessWidget {
           style: AppConstants.captionStyle,
         ),
       ],
+    );
+  }
+}
+
+class _PriorityStat extends StatelessWidget {
+  final String label;
+  final int value;
+  final int completed;
+  final Color color;
+  const _PriorityStat({required this.label, required this.value, required this.completed, required this.color});
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(label, style: AppConstants.captionStyle.copyWith(color: color)),
+          Text('$completed/$value', style: AppConstants.bodyStyle.copyWith(color: color, fontWeight: FontWeight.bold)),
+        ],
+      ),
     );
   }
 }

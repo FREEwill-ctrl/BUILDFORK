@@ -23,6 +23,25 @@ class TodoProvider with ChangeNotifier {
   int get totalTodos => _todos.length;
   int get completedTodos => _todos.where((todo) => todo.isCompleted).length;
   int get pendingTodos => _todos.where((todo) => !todo.isCompleted).length;
+  int get lowPriorityTodos => _todos.where((todo) => todo.priority == Priority.low).length;
+  int get mediumPriorityTodos => _todos.where((todo) => todo.priority == Priority.medium).length;
+  int get highPriorityTodos => _todos.where((todo) => todo.priority == Priority.high).length;
+
+  int get completedLowPriority => _todos.where((todo) => todo.priority == Priority.low && todo.isCompleted).length;
+  int get completedMediumPriority => _todos.where((todo) => todo.priority == Priority.medium && todo.isCompleted).length;
+  int get completedHighPriority => _todos.where((todo) => todo.priority == Priority.high && todo.isCompleted).length;
+
+  /// Statistik penyelesaian harian 7 hari terakhir
+  Map<DateTime, int> get completedPerDay {
+    final now = DateTime.now();
+    final Map<DateTime, int> data = {};
+    for (int i = 6; i >= 0; i--) {
+      final day = DateTime(now.year, now.month, now.day).subtract(Duration(days: i));
+      data[day] = _todos.where((todo) => todo.isCompleted && todo.dueDate != null &&
+        todo.dueDate!.year == day.year && todo.dueDate!.month == day.month && todo.dueDate!.day == day.day).length;
+    }
+    return data;
+  }
 
   Future<void> loadTodos() async {
     _isLoading = true;

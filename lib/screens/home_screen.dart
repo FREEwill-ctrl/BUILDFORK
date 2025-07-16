@@ -12,7 +12,9 @@ import 'edit_task_screen.dart';
 import 'pomodoro_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final void Function(ThemeMode)? onThemeModeChanged;
+  final ThemeMode? currentThemeMode;
+  const HomeScreen({Key? key, this.onThemeModeChanged, this.currentThemeMode}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -53,15 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-          IconButton(
-            icon: Icon(_showStats ? Icons.visibility_off : Icons.visibility),
-            onPressed: () {
-              setState(() {
-                _showStats = !_showStats;
-              });
-            },
-            tooltip: _showStats ? 'Hide Stats' : 'Show Stats',
-          ),
           PopupMenuButton<String>(
             onSelected: (value) {
               final provider = context.read<TodoProvider>();
@@ -74,6 +67,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   break;
                 case 'pending':
                   provider.filterByCompleted(false);
+                  break;
+                case 'theme_light':
+                  widget.onThemeModeChanged?.call(ThemeMode.light);
+                  break;
+                case 'theme_dark':
+                  widget.onThemeModeChanged?.call(ThemeMode.dark);
+                  break;
+                case 'theme_system':
+                  widget.onThemeModeChanged?.call(ThemeMode.system);
                   break;
               }
             },
@@ -90,7 +92,47 @@ class _HomeScreenState extends State<HomeScreen> {
                 value: 'completed',
                 child: Text('Completed Tasks'),
               ),
+              const PopupMenuDivider(),
+              PopupMenuItem(
+                value: 'theme_light',
+                child: Row(
+                  children: [
+                    Icon(Icons.light_mode, color: widget.currentThemeMode == ThemeMode.light ? Theme.of(context).colorScheme.primary : null),
+                    const SizedBox(width: 8),
+                    const Text('Light Mode'),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'theme_dark',
+                child: Row(
+                  children: [
+                    Icon(Icons.dark_mode, color: widget.currentThemeMode == ThemeMode.dark ? Theme.of(context).colorScheme.primary : null),
+                    const SizedBox(width: 8),
+                    const Text('Dark Mode'),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'theme_system',
+                child: Row(
+                  children: [
+                    Icon(Icons.brightness_auto, color: widget.currentThemeMode == ThemeMode.system ? Theme.of(context).colorScheme.primary : null),
+                    const SizedBox(width: 8),
+                    const Text('System Default'),
+                  ],
+                ),
+              ),
             ],
+          ),
+          IconButton(
+            icon: Icon(_showStats ? Icons.visibility_off : Icons.visibility),
+            onPressed: () {
+              setState(() {
+                _showStats = !_showStats;
+              });
+            },
+            tooltip: _showStats ? 'Hide Stats' : 'Show Stats',
           ),
         ],
       ),
