@@ -119,4 +119,30 @@ class NotificationService {
       platformChannelSpecifics,
     );
   }
+
+  /// Show notification for Pomodoro session transitions
+  Future<void> showPomodoroNotification({
+    required int id,
+    required String title,
+    required String body,
+  }) async {
+    final fln.AndroidNotificationDetails androidPlatformChannelSpecifics =
+        fln.AndroidNotificationDetails(
+      'pomodoro_channel',
+      'Pomodoro Notifications',
+      channelDescription: 'Notifications for Pomodoro timer',
+      importance: fln.Importance.max,
+      priority: fln.Priority.high,
+    );
+
+    final fln.NotificationDetails platformChannelSpecifics =
+        fln.NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await _flutterLocalNotificationsPlugin.show(
+      id,
+      title,
+      body,
+      platformChannelSpecifics,
+    );
+  }
 }
