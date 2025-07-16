@@ -9,6 +9,7 @@ import '../widgets/priority_chip.dart';
 import '../widgets/celebration_widget.dart';
 import 'add_task_screen.dart';
 import 'edit_task_screen.dart';
+import 'pomodoro_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -41,6 +42,17 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text(AppConstants.appName),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.timer),
+            tooltip: 'Pomodoro Timer',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const PomodoroScreen(),
+                ),
+              );
+            },
+          ),
           IconButton(
             icon: Icon(_showStats ? Icons.visibility_off : Icons.visibility),
             onPressed: () {
