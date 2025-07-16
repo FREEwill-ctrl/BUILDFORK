@@ -63,14 +63,14 @@ jobs:
     - name: Get dependencies
       run: flutter pub get
       
-    - name: Build APK (Debug)
-      run: flutter build apk --debug
+    - name: Build APK (Release)
+      run: flutter build apk --release
       
-    - name: Upload Debug APK
+    - name: Upload Release APK
       uses: actions/upload-artifact@v4
       with:
-        name: debug-apk
-        path: build/app/outputs/flutter-apk/app-debug.apk
+        name: release-apk
+        path: build/app/outputs/flutter-apk/app-release.apk
         retention-days: 30
 
   create-release:
@@ -83,10 +83,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Download Debug APK
+    - name: Download Release APK
       uses: actions/download-artifact@v4
       with:
-        name: debug-apk
+        name: release-apk
         path: ./artifacts/
         
     - name: Get current date
@@ -108,7 +108,7 @@ jobs:
           **Commit:** ${{ github.sha }}
           
           ### What's Included:
-          - ✅ Debug APK (development build)
+          - ✅ Release APK (production build)
           
           ### Installation:
           1. Download the APK file
@@ -126,14 +126,14 @@ jobs:
         draft: false
         prerelease: false
         
-    - name: Upload Debug APK
+    - name: Upload Release APK
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./artifacts/app-debug.apk
-        asset_name: flutter-todo-app-debug-v1.0.${{ github.run_number }}.apk
+        asset_path: ./artifacts/app-release.apk
+        asset_name: flutter-todo-app-release-v1.0.${{ github.run_number }}.apk
         asset_content_type: application/vnd.android.package-archive
 
   notify:
