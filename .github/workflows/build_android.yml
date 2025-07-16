@@ -66,20 +66,12 @@ jobs:
     - name: Build APK (Debug)
       run: flutter build apk --debug
       
-
-      
     - name: Upload Debug APK
       uses: actions/upload-artifact@v4
       with:
         name: debug-apk
         path: build/app/outputs/flutter-apk/app-debug.apk
         retention-days: 30
-        
-
-
-
-
-
 
   create-release:
     name: Create Release
@@ -91,11 +83,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-
-        
-
-        
-
+    - name: Download Debug APK
+      uses: actions/download-artifact@v4
+      with:
+        name: debug-apk
+        path: ./artifacts/
         
     - name: Get current date
       id: date
@@ -116,9 +108,7 @@ jobs:
           **Commit:** ${{ github.sha }}
           
           ### What's Included:
-          - ✅ Release APK (unsigned)
-          - ✅ Release AAB (Android App Bundle)
-          - ✅ Signed APK (production ready)
+          - ✅ Debug APK (development build)
           
           ### Installation:
           1. Download the APK file
@@ -145,8 +135,6 @@ jobs:
         asset_path: ./artifacts/app-debug.apk
         asset_name: flutter-todo-app-debug-v1.0.${{ github.run_number }}.apk
         asset_content_type: application/vnd.android.package-archive
-        
-
 
   notify:
     name: Notify Build Status
@@ -159,7 +147,7 @@ jobs:
       if: needs.build-apk.result == 'success'
       run: |
         echo "✅ Build completed successfully!"
-        echo "APK and AAB files are ready for download."
+        echo "APK files are ready for download."
         
     - name: Notify Failure
       if: needs.build-apk.result == 'failure'
