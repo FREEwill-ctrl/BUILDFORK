@@ -1,25 +1,40 @@
-build-signed-apk:
+name: Build Signed APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-signed-apk:
     name: Build Signed APK
-    needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: '17'
-        
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.16.0'
-        channel: 'stable'
-        cache: true
-        
-    - name: Get dependencies
-      run: flutter pub get
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.0'
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build Signed APK
+        run: flutter build apk --release
+
+      - name: Upload Signed APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30
