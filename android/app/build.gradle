@@ -36,7 +36,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.example.flutter_todo_app"
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -54,8 +54,8 @@ android {
 
     defaultConfig {
         applicationId "com.example.flutter_todo_app"
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion 21
+        targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         
