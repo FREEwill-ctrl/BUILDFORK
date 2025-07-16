@@ -54,6 +54,7 @@ class NotificationService {
       channelDescription: 'Notifications for todo reminders',
       importance: fln.Importance.max,
       priority: fln.Priority.high,
+      sound: const fln.RawResourceAndroidNotificationSound('notification'),
     );
 
     final fln.NotificationDetails platformChannelSpecifics =
