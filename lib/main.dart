@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/todo_provider.dart';
-import 'providers/pomodoro_provider.dart';
 import 'services/notification_service.dart';
 import 'screens/home_screen.dart';
-import 'utils/app_theme.dart';
 import 'utils/constants.dart';
 
 void main() async {
@@ -24,7 +22,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TodoProvider()),
-        ChangeNotifierProvider(create: (_) => PomodoroProvider()),
       ],
       child: MaterialApp(
         title: AppConstants.appName,
@@ -37,4 +34,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

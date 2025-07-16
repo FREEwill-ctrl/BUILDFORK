@@ -99,9 +99,3 @@
     java.lang.Object readResolve();
 }
 
-
-
-# Play Core rules to prevent R8 from removing necessary classes
--keep class com.google.android.play.core.** { *; }
--keep interface com.google.android.play.core.** { *; }
-

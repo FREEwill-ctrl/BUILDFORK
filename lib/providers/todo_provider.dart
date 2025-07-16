@@ -44,12 +44,12 @@ class TodoProvider with ChangeNotifier {
       final id = await _databaseService.insertTodo(todo);
       final newTodo = todo.copyWith(id: id);
       _todos.add(newTodo);
-      
+
       // Schedule notification if due date is set
       if (newTodo.dueDate != null) {
         await _notificationService.scheduleTaskReminder(newTodo);
       }
-      
+
       _applyFilters();
       notifyListeners();
     } catch (e) {
@@ -63,7 +63,7 @@ class TodoProvider with ChangeNotifier {
       final index = _todos.indexWhere((t) => t.id == todo.id);
       if (index != -1) {
         _todos[index] = todo;
-        
+
         // Update notification
         if (todo.id != null) {
           await _notificationService.cancelNotification(todo.id!);
@@ -71,7 +71,7 @@ class TodoProvider with ChangeNotifier {
             await _notificationService.scheduleTaskReminder(todo);
           }
         }
-        
+
         _applyFilters();
         notifyListeners();
       }
@@ -177,4 +177,3 @@ class TodoProvider with ChangeNotifier {
     }
   }
 }
-

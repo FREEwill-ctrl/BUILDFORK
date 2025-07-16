@@ -40,7 +40,7 @@ class StatsCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppConstants.paddingMedium),
-            
+
             // Progress Bar
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,9 +73,9 @@ class StatsCard extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: AppConstants.paddingMedium),
-            
+
             // Stats Row
             Row(
               children: [
@@ -225,4 +225,3 @@ class CompactStatsCard extends StatelessWidget {
     );
   }
 }
-

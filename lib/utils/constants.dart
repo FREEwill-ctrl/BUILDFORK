@@ -62,7 +62,78 @@ class AppConstants {
   // Notification
   static const String notificationChannelId = 'todo_channel';
   static const String notificationChannelName = 'Todo Notifications';
-  static const String notificationChannelDescription = 'Notifications for todo reminders';
+  static const String notificationChannelDescription =
+      'Notifications for todo reminders';
 }
 
+class AppTheme {
+  static ThemeData lightTheme = ThemeData(
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppConstants.primaryColor,
+      brightness: Brightness.light,
+    ),
+    appBarTheme: const AppBarTheme(
+      centerTitle: true,
+      elevation: 0,
+    ),
+    cardTheme: CardTheme(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppConstants.borderRadiusMedium),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppConstants.borderRadiusMedium),
+      ),
+      contentPadding: const EdgeInsets.all(AppConstants.paddingMedium),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppConstants.borderRadiusMedium),
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppConstants.paddingLarge,
+          vertical: AppConstants.paddingMedium,
+        ),
+      ),
+    ),
+  );
 
+  static ThemeData darkTheme = ThemeData(
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppConstants.primaryColor,
+      brightness: Brightness.dark,
+    ),
+    appBarTheme: const AppBarTheme(
+      centerTitle: true,
+      elevation: 0,
+    ),
+    cardTheme: CardTheme(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppConstants.borderRadiusMedium),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppConstants.borderRadiusMedium),
+      ),
+      contentPadding: const EdgeInsets.all(AppConstants.paddingMedium),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppConstants.borderRadiusMedium),
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppConstants.paddingLarge,
+          vertical: AppConstants.paddingMedium,
+        ),
+      ),
+    ),
+  );
+}

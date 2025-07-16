@@ -93,4 +93,3 @@ extension PriorityExtension on Priority {
     }
   }
 }
-
