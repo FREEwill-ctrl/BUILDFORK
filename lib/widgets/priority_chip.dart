@@ -77,17 +77,6 @@ class PriorityChip extends StatelessWidget {
       ),
     );
   }
-
-  IconData _getPriorityIcon(Priority priority) {
-    switch (priority) {
-      case Priority.low:
-        return Icons.keyboard_arrow_down;
-      case Priority.medium:
-        return Icons.remove;
-      case Priority.high:
-        return Icons.keyboard_arrow_up;
-    }
-  }
 }
 
 class PrioritySelector extends StatelessWidget {

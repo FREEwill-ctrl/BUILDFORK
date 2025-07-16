@@ -22,6 +22,7 @@ class StatsCard extends StatelessWidget {
     final todoProvider = Provider.of<TodoProvider>(context, listen: false);
     final completedPerDay = todoProvider.completedPerDay;
     final maxCompleted = completedPerDay.values.isNotEmpty ? completedPerDay.values.reduce((a, b) => a > b ? a : b) : 1;
+    final hasNotification = todoProvider.todos.any((todo) => todo.dueDate != null && !todo.isCompleted && todo.dueDate!.isAfter(DateTime.now()));
 
     return Card(
       child: Padding(
@@ -179,7 +180,6 @@ class StatsCard extends StatelessWidget {
             ),
 
             // Notification icon di statistik
-            final hasNotification = todoProvider.todos.any((todo) => todo.dueDate != null && !todo.isCompleted && todo.dueDate!.isAfter(DateTime.now()));
             if (hasNotification) ...[
               Row(
                 children: [
