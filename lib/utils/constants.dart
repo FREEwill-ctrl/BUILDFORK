@@ -77,10 +77,10 @@ class AppTheme {
       centerTitle: true,
       elevation: 0,
     ),
-    cardTheme: CardThemeData(
+    cardTheme: const CardThemeData(
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppConstants.borderRadiusMedium),
+        borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
@@ -112,10 +112,10 @@ class AppTheme {
       centerTitle: true,
       elevation: 0,
     ),
-    cardTheme: CardThemeData(
+    cardTheme: const CardThemeData(
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppConstants.borderRadiusMedium),
+        borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
