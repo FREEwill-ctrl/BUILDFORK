@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text(AppConstants.appName),
         actions: [
           IconButton(
-            icon: const Icon(Icons.timer),
+            icon: Image.asset('assets/icons/timer.png', width: 22, height: 22),
             tooltip: 'Pomodoro Timer',
             onPressed: () {
               Navigator.of(context).push(
@@ -255,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _addTask(context),
-        child: const Icon(Icons.add),
+        child: Image.asset('assets/icons/add.png', width: 24, height: 24),
       ),
     );
   }

@@ -62,11 +62,7 @@ class PriorityChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              _getPriorityIcon(priority),
-              size: 16,
-              color: textColor,
-            ),
+            Image.asset('assets/icons/flag.png', width: 16, height: 16, color: textColor),
             const SizedBox(width: 4),
             Text(
               priority.name,

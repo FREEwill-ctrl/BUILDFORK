@@ -59,11 +59,7 @@ class TaskCard extends StatelessWidget {
                             : Colors.transparent,
                       ),
                       child: todo.isCompleted
-                          ? const Icon(
-                              Icons.check,
-                              size: 16,
-                              color: Colors.white,
-                            )
+                          ? Image.asset('assets/icons/check.png', width: 16, height: 16, color: Colors.white)
                           : null,
                     ),
                   ),
@@ -135,7 +131,7 @@ class TaskCard extends StatelessWidget {
                         value: 'edit',
                         child: Row(
                           children: [
-                            Icon(Icons.edit),
+                            Image.asset('assets/icons/edit.png', width: 18, height: 18),
                             SizedBox(width: 8),
                             Text('Edit'),
                           ],
@@ -145,7 +141,7 @@ class TaskCard extends StatelessWidget {
                         value: 'delete',
                         child: Row(
                           children: [
-                            Icon(Icons.delete, color: Colors.red),
+                            Image.asset('assets/icons/delete.png', width: 18, height: 18),
                             SizedBox(width: 8),
                             Text('Delete', style: TextStyle(color: Colors.red)),
                           ],
@@ -178,13 +174,7 @@ class TaskCard extends StatelessWidget {
               Row(
                 children: [
                   if (todo.dueDate != null) ...[
-                    Icon(
-                      Icons.schedule,
-                      size: 16,
-                      color: isOverdue
-                          ? AppConstants.errorColor
-                          : theme.colorScheme.onSurface.withOpacity(0.6),
-                    ),
+                    Image.asset('assets/icons/calendar.png', width: 16, height: 16, color: isOverdue ? AppConstants.errorColor : theme.colorScheme.onSurface.withOpacity(0.6)),
                     const SizedBox(width: 4),
                     Text(
                       'Due: ${DateFormat('MMM dd, yyyy').format(todo.dueDate!)}',
@@ -196,11 +186,7 @@ class TaskCard extends StatelessWidget {
                     ),
                     const SizedBox(width: AppConstants.paddingMedium),
                   ],
-                  Icon(
-                    Icons.access_time,
-                    size: 16,
-                    color: theme.colorScheme.onSurface.withOpacity(0.6),
-                  ),
+                  Image.asset('assets/icons/timer.png', width: 16, height: 16, color: theme.colorScheme.onSurface.withOpacity(0.6)),
                   const SizedBox(width: 4),
                   Text(
                     'Created: ${DateFormat('MMM dd').format(todo.createdAt)}',
@@ -250,11 +236,7 @@ class CompactTaskCard extends StatelessWidget {
                 : Colors.transparent,
           ),
           child: todo.isCompleted
-              ? const Icon(
-                  Icons.check,
-                  size: 16,
-                  color: Colors.white,
-                )
+              ? Image.asset('assets/icons/check.png', width: 16, height: 16, color: Colors.white)
               : null,
         ),
       ),

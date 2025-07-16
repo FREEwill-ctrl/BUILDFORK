@@ -174,9 +174,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         ),
                         TextButton.icon(
                           onPressed: _selectDueDate,
-                          icon: const Icon(Icons.calendar_today),
-                          label: Text(
-                              _selectedDueDate != null ? 'Change' : 'Set Date'),
+                          icon: Image.asset('assets/icons/calendar.png', width: 18, height: 18),
+                          label: Text(_selectedDueDate != null ? 'Change' : 'Set Date'),
                         ),
                         if (_selectedDueDate != null)
                           IconButton(
@@ -185,7 +184,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                 _selectedDueDate = null;
                               });
                             },
-                            icon: const Icon(Icons.clear),
+                            icon: Image.asset('assets/icons/delete.png', width: 18, height: 18),
                             tooltip: 'Clear due date',
                           ),
                       ],
