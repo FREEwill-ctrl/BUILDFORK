@@ -86,16 +86,15 @@ class TaskCard extends StatelessWidget {
                         Row(
                           children: [
                             PriorityChip(priority: todo.priority),
+                            // Overdue label
                             if (isOverdue) ...[
                               const SizedBox(width: AppConstants.paddingSmall),
+                              Image.asset('assets/icons/alarm.png', width: 16, height: 16, color: AppConstants.errorColor),
+                              const SizedBox(width: 4),
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 2,
-                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color:
-                                      AppConstants.errorColor.withOpacity(0.1),
+                                  color: AppConstants.errorColor.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
