@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/todo_provider.dart';
 import '../models/todo_model.dart';
+import 'package:file_picker/file_picker.dart';
 
 class AddEditTodoScreen extends StatefulWidget {
   final Todo? todo;
@@ -139,9 +140,29 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
             ),
             const SizedBox(height: 8),
             const Text('Lampiran (dummy)', style: TextStyle(fontWeight: FontWeight.bold)),
-            Wrap(
-              spacing: 8,
-              children: _attachments.map((file) => Chip(label: Text(file.split('/').last))).toList(),
+            Row(
+              children: [
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.attach_file),
+                  label: const Text('Upload Lampiran'),
+                  onPressed: () async {
+                    final result = await FilePicker.platform.pickFiles(allowMultiple: true);
+                    if (result != null) {
+                      setState(() {
+                        _attachments.addAll(result.paths.whereType<String>());
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(width: 8),
+                if (_attachments.isNotEmpty)
+                  Expanded(
+                    child: Wrap(
+                      spacing: 8,
+                      children: _attachments.map((file) => Chip(label: Text(file.split('/').last))).toList(),
+                    ),
+                  ),
+              ],
             ),
             const SizedBox(height: 24),
             ElevatedButton(

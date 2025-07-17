@@ -4,6 +4,7 @@ import '../providers/todo_provider.dart';
 import '../models/todo_model.dart';
 import '../widgets/todo_tile.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../../shared/app_theme.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,7 +21,17 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Todo Modular')),
+      appBar: AppBar(
+        title: const Text('Todo Modular'),
+        actions: [
+          IconButton(
+            icon: Icon(Theme.of(context).brightness == Brightness.dark ? Icons.light_mode : Icons.dark_mode),
+            onPressed: () {
+              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+            },
+          ),
+        ],
+      ),
       body: Column(
         children: [
           TableCalendar(
