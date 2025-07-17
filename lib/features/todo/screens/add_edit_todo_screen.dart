@@ -42,7 +42,13 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
                 if (title.isNotEmpty) {
                   if (widget.todo == null) {
                     Provider.of<TodoProvider>(context, listen: false).addTodo(
-                      Todo(title: title, description: desc, createdAt: DateTime.now(), priority: Priority.medium),
+                      Todo(
+                        title: title,
+                        description: desc,
+                        createdAt: DateTime.now(),
+                        priority: EisenhowerPriority.urgentImportant,
+                        priorityLabel: 'Penting & Mendesak',
+                      ),
                     );
                   } else {
                     // Update logic here
