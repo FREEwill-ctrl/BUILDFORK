@@ -1,159 +1,27 @@
-# Trigger build: minor edit for workflow trigger
 name: Build Android APK
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [main]
 
 jobs:
-  test:
-    name: Run Tests
+  build:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: '17'
-        
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.16.0'
-        channel: 'stable'
-        cache: true
-        
-    - name: Get dependencies
-      run: flutter pub get
-      
-    - name: Verify the installation
-      run: flutter doctor -v
-      
-    - name: Run analyzer
-      run: flutter analyze
-      
-  build-apk:
-    name: Build APK
-    needs: test
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: '17'
-        
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.16.0'
-        channel: 'stable'
-        cache: true
-        
-    - name: Get dependencies
-      run: flutter pub get
-      
-    - name: Build APK (Release)
-      run: flutter build apk --release
-      
-    - name: Upload Release APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: release-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
-        retention-days: 30
-
-  create-release:
-    name: Create Release
-    needs: [build-apk]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Download Release APK
-      uses: actions/download-artifact@v4
-      with:
-        name: release-apk
-        path: ./artifacts/
-        
-    - name: Get current date
-      id: date
-      run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-      
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v1.0.${{ github.run_number }}
-        release_name: Release v1.0.${{ github.run_number }}
-        body: |
-          ## Flutter Todo App Release
-          
-          **Build Date:** ${{ steps.date.outputs.date }}
-          **Commit:** ${{ github.sha }}
-          
-          ### What's Included:
-          - ✅ Release APK (production build)
-          
-          ### Installation:
-          1. Download the APK file
-          2. Enable "Install from unknown sources" on your Android device
-          3. Install the APK
-          
-          ### Features:
-          - Create, read, update, delete todo items
-          - Priority system (High, Medium, Low)
-          - Due date reminders
-          - Search and filter functionality
-          - Local storage with SQLite
-          - Material Design 3 UI
-          
-        draft: false
-        prerelease: false
-        
-    - name: Upload Release APK
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./artifacts/app-release.apk
-        asset_name: flutter-todo-app-release-v1.0.${{ github.run_number }}.apk
-        asset_content_type: application/vnd.android.package-archive
-
-  notify:
-    name: Notify Build Status
-    needs: [build-apk]
-    runs-on: ubuntu-latest
-    if: always()
-    
-    steps:
-    - name: Notify Success
-      if: needs.build-apk.result == 'success'
-      run: |
-        echo "✅ Build completed successfully!"
-        echo "APK files are ready for download."
-        
-    - name: Notify Failure
-      if: needs.build-apk.result == 'failure'
-      run: |
-        echo "❌ Build failed!"
-        echo "Please check the logs for more details."
-        exit 1
-
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.0'
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Analyze
+        run: flutter analyze
+      - name: Build APK
+        run: flutter build apk --release
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
