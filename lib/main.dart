@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/todo_provider.dart';
-import 'providers/pomodoro_provider.dart';
-import 'services/notification_service.dart';
-import 'screens/home_screen.dart';
-import 'utils/constants.dart';
+import 'features/todo/providers/todo_provider.dart';
+import 'features/pomodoro/providers/pomodoro_provider.dart';
+import 'shared/notification_service.dart';
+import 'features/todo/screens/home_screen.dart';
+import 'shared/constants.dart';
 import 'package:quick_actions/quick_actions.dart';
-import 'screens/add_task_screen.dart';
-import 'screens/pomodoro_screen.dart';
+import 'features/todo/screens/add_task_screen.dart';
+import 'features/pomodoro/screens/pomodoro_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:home_widget/home_widget.dart';
+import 'shared/app_theme.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
