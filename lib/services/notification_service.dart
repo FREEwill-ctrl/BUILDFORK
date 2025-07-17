@@ -23,7 +23,7 @@ class NotificationService {
     tz.initializeTimeZones();
 
     const fln.AndroidInitializationSettings initializationSettingsAndroid =
-        fln.AndroidInitializationSettings('@mipmap/ic_launcher');
+        fln.AndroidInitializationSettings('@drawable/bell_icon');
 
     const fln.InitializationSettings initializationSettings =
         fln.InitializationSettings(

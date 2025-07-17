@@ -36,5 +36,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/sounds/
+    - assets/notification_icons/
+    - assets/notification_sounds/
 
 
