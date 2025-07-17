@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/todo_provider.dart';
 import '../models/todo_model.dart';
+import '../widgets/todo_tile.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -16,13 +17,9 @@ class HomeScreen extends StatelessWidget {
             itemCount: provider.todos.length,
             itemBuilder: (context, index) {
               final todo = provider.todos[index];
-              return ListTile(
-                title: Text(todo.title),
-                subtitle: Text(todo.description),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () => provider.deleteTodo(index),
-                ),
+              return TodoTile(
+                todo: todo,
+                onDelete: () => provider.deleteTodo(index),
               );
             },
           );
