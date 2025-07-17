@@ -5,6 +5,8 @@ import '../services/time_tracking_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import '../../todo/providers/todo_provider.dart';
+import '../../todo/models/todo_model.dart';
 
 class TimeTrackingProvider extends ChangeNotifier {
   Timer? _activeTimer;
@@ -137,6 +139,69 @@ class TimeTrackingProvider extends ChangeNotifier {
   void syncPomodoroTaskTime(String taskId, Duration pomodoroTime) {
     _taskTimers[taskId] = (_taskTimers[taskId] ?? Duration.zero) + pomodoroTime;
     notifyListeners();
+  }
+
+  /// Returns a map of quadrant label to total time spent (in minutes)
+  Map<String, double> getQuadrantTimeDistribution(BuildContext context) {
+    final todoProvider = Provider.of<TodoProvider>(context, listen: false);
+    final todos = todoProvider.todos;
+    final Map<String, double> result = {
+      'Penting & Mendesak': 0,
+      'Penting & Tidak Mendesak': 0,
+      'Tidak Penting & Mendesak': 0,
+      'Tidak Penting & Tidak Mendesak': 0,
+    };
+    for (final todo in todos) {
+      final key = todo.priorityLabel;
+      final time = getTaskTotalTime(todo.id.toString()).inMinutes.toDouble();
+      if (result.containsKey(key)) {
+        result[key] = result[key]! + time;
+      }
+    }
+    return result;
+  }
+
+  /// Returns a map of DateTime (day) to productivity score (0..1)
+  Future<Map<DateTime, double>> getProductivityHeatmap(BuildContext context) async {
+    final todoProvider = Provider.of<TodoProvider>(context, listen: false);
+    final todos = todoProvider.todos;
+    final Map<DateTime, double> result = {};
+    for (final todo in todos) {
+      final sessions = await _storage.getTaskTimeSessions(todo.id.toString());
+      for (final session in sessions) {
+        final day = DateTime(session.startTime.year, session.startTime.month, session.startTime.day);
+        result[day] = (result[day] ?? 0) + session.duration.inMinutes / 120.0; // Normalize to 2h max
+      }
+    }
+    // Clamp to 1.0
+    result.updateAll((k, v) => v > 1.0 ? 1.0 : v);
+    return result;
+  }
+
+  /// Returns daily stats for today (can be extended for range)
+  Future<DailyStats> getTodayStats(BuildContext context) async {
+    final todoProvider = Provider.of<TodoProvider>(context, listen: false);
+    final todos = todoProvider.todos;
+    final today = DateTime.now();
+    int tasksCompleted = 0;
+    int pomodoroSessions = 0; // Placeholder, integrate with PomodoroProvider
+    double totalMinutes = 0;
+    for (final todo in todos) {
+      if (todo.isCompleted && todo.dueDate != null &&
+          todo.dueDate!.year == today.year && todo.dueDate!.month == today.month && todo.dueDate!.day == today.day) {
+        tasksCompleted++;
+      }
+      totalMinutes += getTaskTotalTime(todo.id.toString()).inMinutes;
+    }
+    // Productivity score: ratio of completed tasks to total
+    final productivityScore = todos.isEmpty ? 0 : tasksCompleted / todos.length;
+    return DailyStats(
+      date: today,
+      totalTimeSpent: Duration(minutes: totalMinutes.toInt()),
+      tasksCompleted: tasksCompleted,
+      pomodoroSessions: pomodoroSessions,
+      productivityScore: productivityScore,
+    );
   }
 
   Future<void> _restoreActiveTimer() async {
