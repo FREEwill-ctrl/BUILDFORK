@@ -13,7 +13,6 @@ void main() {
 
   group('TimeTrackingProvider', () {
     late TimeTrackingProvider provider;
-    final todo = Todo(id: 1, title: 'Test', description: '', createdAt: DateTime.now(), priority: EisenhowerPriority.urgentImportant, priorityLabel: 'Penting & Mendesak', isCompleted: false, attachments: [], checklist: []);
 
     setUp(() {
       provider = TimeTrackingProvider();
