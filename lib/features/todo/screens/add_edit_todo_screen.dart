@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../providers/todo_provider.dart';
 import '../models/todo_model.dart';
 import 'package:file_picker/file_picker.dart';
+import '../../analytics/widgets/task_timer_widget.dart';
+import '../../analytics/providers/time_tracking_provider.dart';
 
 class AddEditTodoScreen extends StatefulWidget {
   final Todo? todo;
@@ -106,6 +108,24 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
                       alignLabelWithHint: true,
                     ),
                   ),
+                  // --- Task Timer Widget Integration (Detail) ---
+                  if (widget.todo != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12.0, bottom: 8.0),
+                      child: Consumer<TimeTrackingProvider>(
+                        builder: (context, timerProvider, _) {
+                          final isActive = timerProvider._activeTaskId == widget.todo!.id.toString();
+                          final totalTime = timerProvider.getTaskTotalTime(widget.todo!.id.toString());
+                          return TaskTimerWidget(
+                            isActive: isActive,
+                            totalTime: totalTime,
+                            onStart: () => timerProvider.startTaskTimer(widget.todo!.id.toString()),
+                            onPause: () => timerProvider.pauseTaskTimer(widget.todo!.id.toString()),
+                            onStop: () => timerProvider.stopTaskTimer(widget.todo!.id.toString()),
+                          );
+                        },
+                      ),
+                    ),
                   const SizedBox(height: 16),
                   Row(
                     children: [

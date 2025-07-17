@@ -5,6 +5,7 @@ import 'features/pomodoro/providers/pomodoro_provider.dart';
 import 'shared/app_theme.dart';
 import 'features/todo/screens/home_screen.dart';
 import 'features/pomodoro/screens/pomodoro_screen.dart';
+import 'features/time_tracking/providers/time_tracking_provider.dart';
 // ThemeProvider sudah ada di app_theme.dart
 
 void main() {
@@ -21,6 +22,7 @@ class TodoModularApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => TodoProvider()),
         ChangeNotifierProvider(create: (_) => PomodoroProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => TimeTrackingProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) => MaterialApp(

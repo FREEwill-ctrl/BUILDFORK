@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/todo_model.dart';
+import '../../analytics/widgets/task_timer_widget.dart';
+import 'package:provider/provider.dart';
+import '../../analytics/providers/time_tracking_provider.dart';
 
 class TodoTile extends StatelessWidget {
   final Todo todo;
@@ -98,6 +101,23 @@ class TodoTile extends StatelessWidget {
                   children: todo.attachments.map((file) => Chip(label: Text(file.split('/').last))).toList(),
                 ),
               ),
+            // --- Task Timer Widget Integration ---
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Consumer<TimeTrackingProvider>(
+                builder: (context, timerProvider, _) {
+                  final isActive = timerProvider._activeTaskId == todo.id.toString();
+                  final totalTime = timerProvider.getTaskTotalTime(todo.id.toString());
+                  return TaskTimerWidget(
+                    isActive: isActive,
+                    totalTime: totalTime,
+                    onStart: () => timerProvider.startTaskTimer(todo.id.toString()),
+                    onPause: () => timerProvider.pauseTaskTimer(todo.id.toString()),
+                    onStop: () => timerProvider.stopTaskTimer(todo.id.toString()),
+                  );
+                },
+              ),
+            ),
           ],
         ),
         trailing: Row(
