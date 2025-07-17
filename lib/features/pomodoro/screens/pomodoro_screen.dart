@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../providers/pomodoro_provider.dart';
 import '../../../shared/app_theme.dart';
 import '../../todo/providers/todo_provider.dart';
-import '../../todo/models/todo_model.dart';
 
 class PomodoroScreen extends StatelessWidget {
   const PomodoroScreen({super.key});

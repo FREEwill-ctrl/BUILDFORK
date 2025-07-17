@@ -6,6 +6,7 @@ import 'shared/app_theme.dart';
 import 'features/todo/screens/home_screen.dart';
 import 'features/pomodoro/screens/pomodoro_screen.dart';
 import 'features/analytics/providers/time_tracking_provider.dart';
+import 'features/analytics/screens/analytics_dashboard.dart';
 // ThemeProvider sudah ada di app_theme.dart
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();

@@ -175,11 +175,11 @@ class TimeTrackingProvider extends ChangeNotifier {
       final sessions = await _storage.getTaskTimeSessions(todo.id.toString());
       for (final session in sessions) {
         final day = DateTime(session.startTime.year, session.startTime.month, session.startTime.day);
-        result[day] = (result[day] ?? 0) + session.duration.inMinutes / 120.0; // Normalize to 2h max
+        result[day] = (result[day] ?? 0.0) + (session.duration.inMinutes.toDouble() / 120.0); // Normalize to 2h max
       }
     }
     // Clamp to 1.0
-    result.updateAll((k, v) => v > 1.0 ? 1.0 : v);
+    result.updateAll((k, v) => v > 1.0 ? 1.0 : v.toDouble());
     _heatmapCache = result;
     _heatmapCacheTime = DateTime.now();
     return result;

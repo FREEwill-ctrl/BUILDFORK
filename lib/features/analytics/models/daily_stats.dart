@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class DailyStats {
   final DateTime date;
   final Duration totalTimeSpent;
