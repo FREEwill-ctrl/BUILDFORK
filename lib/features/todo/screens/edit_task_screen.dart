@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/todo_model.dart';
 import '../providers/todo_provider.dart';
-import '../utils/constants.dart';
+import '../../../shared/constants.dart';
 import '../widgets/priority_chip.dart';
+import 'package:file_picker/file_picker.dart';
 
 class EditTaskScreen extends StatefulWidget {
   final Todo todo;
@@ -27,21 +28,27 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   late bool _isCompleted;
   bool _isLoading = false;
 
+  // Tambahkan field untuk attachment dan checklist
+  List<String> _attachments = [];
+  List<ChecklistItem> _checklist = [];
+  final _checklistController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.todo.title);
-    _descriptionController =
-        TextEditingController(text: widget.todo.description);
+    _descriptionController = TextEditingController(text: widget.todo.description);
     _selectedPriority = widget.todo.priority;
     _selectedDueDate = widget.todo.dueDate;
     _isCompleted = widget.todo.isCompleted;
+    _attachments = List<String>.from(widget.todo.attachments);
+    _checklist = List<ChecklistItem>.from(widget.todo.checklist);
   }
-
   @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
+    _checklistController.dispose();
     super.dispose();
   }
 
@@ -252,6 +259,122 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
 
             const SizedBox(height: AppConstants.paddingMedium),
 
+            // Attachments
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(AppConstants.paddingMedium),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Image.asset('assets/icons/attachment.png', width: 20, height: 20),
+                        const SizedBox(width: AppConstants.paddingSmall),
+                        const Text('Attachments'),
+                        const Spacer(),
+                        IconButton(
+                          icon: Image.asset('assets/icons/add.png', width: 20, height: 20),
+                          onPressed: _pickAttachment,
+                          tooltip: 'Add Attachment',
+                        ),
+                      ],
+                    ),
+                    if (_attachments.isNotEmpty)
+                      Wrap(
+                        spacing: 8,
+                        children: _attachments.map((path) => Chip(
+                          label: Text(path.split('/').last),
+                          onDeleted: () {
+                            setState(() {
+                              _attachments.remove(path);
+                            });
+                          },
+                        )).toList(),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: AppConstants.paddingMedium),
+
+            // Checklist
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(AppConstants.paddingMedium),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Image.asset('assets/icons/checklist.png', width: 20, height: 20),
+                        const SizedBox(width: AppConstants.paddingSmall),
+                        const Text('Checklist'),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _checklistController,
+                            decoration: const InputDecoration(hintText: 'Add checklist item'),
+                            onSubmitted: (val) {
+                              if (val.trim().isNotEmpty) {
+                                setState(() {
+                                  _checklist.add(ChecklistItem(text: val.trim()));
+                                  _checklistController.clear();
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                        IconButton(
+                          icon: Image.asset('assets/icons/add.png', width: 20, height: 20),
+                          onPressed: () {
+                            final val = _checklistController.text.trim();
+                            if (val.isNotEmpty) {
+                              setState(() {
+                                _checklist.add(ChecklistItem(text: val));
+                                _checklistController.clear();
+                              });
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    if (_checklist.isNotEmpty)
+                      Column(
+                        children: _checklist.asMap().entries.map((entry) {
+                          final idx = entry.key;
+                          final item = entry.value;
+                          return ListTile(
+                            leading: Checkbox(
+                              value: item.isDone,
+                              onChanged: (val) {
+                                setState(() {
+                                  _checklist[idx] = ChecklistItem(text: item.text, isDone: val ?? false);
+                                });
+                              },
+                            ),
+                            title: Text(item.text),
+                            trailing: IconButton(
+                              icon: Image.asset('assets/icons/delete.png', width: 20, height: 20),
+                              onPressed: () {
+                                setState(() {
+                                  _checklist.removeAt(idx);
+                                });
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: AppConstants.paddingMedium),
+
             // Task Info
             Card(
               child: Padding(
@@ -422,15 +545,22 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     }
   }
 
+  Future<void> _pickAttachment() async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result != null && result.files.single.path != null) {
+      setState(() {
+        _attachments.add(result.files.single.path!);
+      });
+    }
+  }
+
   Future<void> _saveTask() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-
     setState(() {
       _isLoading = true;
     });
-
     try {
       final updatedTodo = widget.todo.copyWith(
         title: _titleController.text.trim(),
@@ -438,10 +568,10 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
         priority: _selectedPriority,
         dueDate: _selectedDueDate,
         isCompleted: _isCompleted,
+        attachments: _attachments,
+        checklist: _checklist,
       );
-
       await context.read<TodoProvider>().updateTodo(updatedTodo);
-
       if (mounted) {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
