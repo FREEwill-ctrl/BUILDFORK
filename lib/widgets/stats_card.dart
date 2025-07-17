@@ -341,7 +341,6 @@ class _AdvancedStats extends StatelessWidget {
   Widget build(BuildContext context) {
     final todoProvider = Provider.of<TodoProvider>(context, listen: false);
     final completedPerDay = todoProvider.completedPerDay;
-    final totalCompleted = todoProvider.completedTodos;
     final avgPerDay = completedPerDay.values.isNotEmpty
         ? (completedPerDay.values.reduce((a, b) => a + b) / completedPerDay.length).toStringAsFixed(1)
         : '0';
