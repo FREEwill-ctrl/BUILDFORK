@@ -9,6 +9,7 @@ import 'package:quick_actions/quick_actions.dart';
 import 'screens/add_task_screen.dart';
 import 'screens/pomodoro_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:home_widget/home_widget.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -94,4 +95,10 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
+}
+
+// Tambahkan fungsi update widget
+Future<void> updateHomeWidget(int taskCount) async {
+  await HomeWidget.saveWidgetData('task_count', taskCount);
+  await HomeWidget.updateWidget(name: 'HomeWidgetProvider', iOSName: 'HomeWidgetProvider');
 }

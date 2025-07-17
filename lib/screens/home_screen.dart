@@ -10,6 +10,8 @@ import '../widgets/celebration_widget.dart';
 import 'add_task_screen.dart';
 import 'edit_task_screen.dart';
 import 'pomodoro_screen.dart';
+import 'package:home_widget/home_widget.dart';
+import '../main.dart';
 
 class HomeScreen extends StatefulWidget {
   final void Function(ThemeMode)? onThemeModeChanged;
@@ -52,6 +54,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 MaterialPageRoute(
                   builder: (context) => const PomodoroScreen(),
                 ),
+              );
+            },
+          ),
+          IconButton(
+            icon: Image.asset('assets/icons/app_icon_192.png', width: 22, height: 22),
+            tooltip: 'Update Home Widget',
+            onPressed: () async {
+              final todoProvider = context.read<TodoProvider>();
+              await updateHomeWidget(todoProvider.totalTodos);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Home widget updated!')),
               );
             },
           ),
