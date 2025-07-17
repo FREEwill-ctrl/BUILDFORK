@@ -4,18 +4,59 @@ import '../models/todo_model.dart';
 class TodoTile extends StatelessWidget {
   final Todo todo;
   final VoidCallback? onDelete;
-  const TodoTile({super.key, required this.todo, this.onDelete});
+  final VoidCallback? onToggle;
+  const TodoTile({super.key, required this.todo, this.onDelete, this.onToggle});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       child: ListTile(
-        title: Text(todo.title),
+        leading: Checkbox(
+          value: todo.isCompleted,
+          onChanged: (_) => onToggle?.call(),
+        ),
+        title: Text(
+          todo.title,
+          style: TextStyle(
+            decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
+            color: todo.isCompleted ? Colors.grey : null,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (todo.description.isNotEmpty) Text(todo.description),
+            if (todo.description.isNotEmpty)
+              Text(
+                todo.description,
+                style: TextStyle(
+                  decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
+                  color: todo.isCompleted ? Colors.grey : null,
+                ),
+              ),
+            if (todo.dueDate != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Row(
+                  children: [
+                    Icon(Icons.calendar_today, size: 16, color: todo.isCompleted ? Colors.grey : (todo.dueDate!.isBefore(DateTime.now()) && !todo.isCompleted ? Colors.red : Colors.blue)),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Tenggat: ${todo.dueDate!.day}/${todo.dueDate!.month}/${todo.dueDate!.year}',
+                      style: TextStyle(
+                        color: todo.isCompleted ? Colors.grey : (todo.dueDate!.isBefore(DateTime.now()) && !todo.isCompleted ? Colors.red : Colors.blue),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    if (todo.dueDate!.isBefore(DateTime.now()) && !todo.isCompleted)
+                      const Padding(
+                        padding: EdgeInsets.only(left: 8),
+                        child: Text('Terlambat', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                      ),
+                  ],
+                ),
+              ),
             if (todo.checklist.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 4),
