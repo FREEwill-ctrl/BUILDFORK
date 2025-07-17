@@ -22,9 +22,15 @@ class ProductivityHeatmap extends StatelessWidget {
           decoration: BoxDecoration(
             color: color,
             borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: Colors.grey.shade300, width: 0.5),
           ),
           child: Center(
-            child: Text('${day.day}', style: TextStyle(fontSize: 10)),
+            child: Text(
+              '${day.day}',
+              style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: Colors.black87),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         );
       },

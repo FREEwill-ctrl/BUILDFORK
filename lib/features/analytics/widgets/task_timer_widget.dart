@@ -47,6 +47,9 @@ class TaskTimerWidget extends StatelessWidget {
     final hours = d.inHours;
     final minutes = d.inMinutes.remainder(60);
     final seconds = d.inSeconds.remainder(60);
+    if (d == Duration.zero) {
+      return '00:00';
+    }
     if (hours > 0) {
       return '${twoDigits(hours)}:${twoDigits(minutes)}:${twoDigits(seconds)}';
     } else {

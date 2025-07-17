@@ -11,34 +11,42 @@ class TodoProvider with ChangeNotifier {
   }
 
   void updateTodo(int index, Todo todo) {
-    _todos[index] = todo;
-    notifyListeners();
+    if (index >= 0 && index < _todos.length) {
+      _todos[index] = todo;
+      notifyListeners();
+    }
   }
 
   void deleteTodo(int index) {
-    _todos.removeAt(index);
-    notifyListeners();
+    if (index >= 0 && index < _todos.length) {
+      _todos.removeAt(index);
+      notifyListeners();
+    }
   }
 
   void toggleTodoStatus(int index) {
-    final todo = _todos[index];
-    _todos[index] = Todo(
-      id: todo.id,
-      title: todo.title,
-      description: todo.description,
-      createdAt: todo.createdAt,
-      dueDate: todo.dueDate,
-      priority: todo.priority,
-      isCompleted: !todo.isCompleted,
-      attachments: todo.attachments,
-      checklist: todo.checklist,
-    );
-    notifyListeners();
+    if (index >= 0 && index < _todos.length) {
+      final todo = _todos[index];
+      _todos[index] = Todo(
+        id: todo.id,
+        title: todo.title,
+        description: todo.description,
+        createdAt: todo.createdAt,
+        dueDate: todo.dueDate,
+        priority: todo.priority,
+        isCompleted: !todo.isCompleted,
+        attachments: todo.attachments,
+        checklist: todo.checklist,
+      );
+      notifyListeners();
+    }
   }
 
   void editTodo(int index, Todo newTodo) {
-    _todos[index] = newTodo.copyWith(priorityLabel: _priorityLabelFromEnum(newTodo.priority));
-    notifyListeners();
+    if (index >= 0 && index < _todos.length) {
+      _todos[index] = newTodo.copyWith(priorityLabel: _priorityLabelFromEnum(newTodo.priority));
+      notifyListeners();
+    }
   }
 
   List<Todo> filterByPriority(EisenhowerPriority? priority) {

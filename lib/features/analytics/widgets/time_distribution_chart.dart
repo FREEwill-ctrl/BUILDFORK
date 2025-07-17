@@ -8,6 +8,18 @@ class TimeDistributionChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = [Colors.red, Colors.blue, Colors.green, Colors.orange];
+    if (quadrantTimes == null) {
+      return Center(child: CircularProgressIndicator());
+    }
+    final total = quadrantTimes.values.fold(0.0, (a, b) => a + b);
+    if (total == 0) {
+      return Center(
+        child: Text(
+          'No data available',
+          style: TextStyle(color: Colors.grey, fontSize: 16),
+        ),
+      );
+    }
     final sections = quadrantTimes.entries.map((entry) {
       final idx = quadrantTimes.keys.toList().indexOf(entry.key);
       return PieChartSectionData(

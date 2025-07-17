@@ -24,12 +24,14 @@ class TodoTile extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                todo.title,
+                (todo.title.isNotEmpty ? todo.title : 'No Title'),
                 style: TextStyle(
                   decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
                   color: todo.isCompleted ? Colors.grey : null,
                   fontWeight: FontWeight.w600,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             Container(
@@ -40,8 +42,10 @@ class TodoTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                todo.priorityLabel,
+                (todo.priorityLabel.isNotEmpty ? todo.priorityLabel : '-'),
                 style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
@@ -56,6 +60,8 @@ class TodoTile extends StatelessWidget {
                   decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
                   color: todo.isCompleted ? Colors.grey : null,
                 ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
             if (todo.dueDate != null)
               Padding(
