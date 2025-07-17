@@ -5,7 +5,8 @@ class TodoTile extends StatelessWidget {
   final Todo todo;
   final VoidCallback? onDelete;
   final VoidCallback? onToggle;
-  const TodoTile({super.key, required this.todo, this.onDelete, this.onToggle});
+  final VoidCallback? onEdit;
+  const TodoTile({super.key, required this.todo, this.onDelete, this.onToggle, this.onEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -16,13 +17,31 @@ class TodoTile extends StatelessWidget {
           value: todo.isCompleted,
           onChanged: (_) => onToggle?.call(),
         ),
-        title: Text(
-          todo.title,
-          style: TextStyle(
-            decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
-            color: todo.isCompleted ? Colors.grey : null,
-            fontWeight: FontWeight.w600,
-          ),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
+                todo.title,
+                style: TextStyle(
+                  decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
+                  color: todo.isCompleted ? Colors.grey : null,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: _priorityColor(todo.priority),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                todo.priorityLabel,
+                style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,8 +100,29 @@ class TodoTile extends StatelessWidget {
               ),
           ],
         ),
-        trailing: onDelete != null ? IconButton(icon: const Icon(Icons.delete), onPressed: onDelete) : null,
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (onEdit != null)
+              IconButton(icon: const Icon(Icons.edit), onPressed: onEdit),
+            if (onDelete != null)
+              IconButton(icon: const Icon(Icons.delete), onPressed: onDelete),
+          ],
+        ),
       ),
     );
+  }
+}
+
+Color _priorityColor(EisenhowerPriority p) {
+  switch (p) {
+    case EisenhowerPriority.urgentImportant:
+      return Colors.redAccent;
+    case EisenhowerPriority.importantNotUrgent:
+      return Colors.blueAccent;
+    case EisenhowerPriority.notImportantUrgent:
+      return Colors.orangeAccent;
+    case EisenhowerPriority.notImportantNotUrgent:
+      return Colors.grey;
   }
 }

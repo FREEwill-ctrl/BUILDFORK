@@ -6,7 +6,7 @@ class TodoProvider with ChangeNotifier {
   List<Todo> get todos => List.unmodifiable(_todos);
 
   void addTodo(Todo todo) {
-    _todos.add(todo);
+    _todos.add(todo.copyWith(priorityLabel: _priorityLabelFromEnum(todo.priority)));
     notifyListeners();
   }
 
@@ -36,10 +36,33 @@ class TodoProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void editTodo(int index, Todo newTodo) {
+    _todos[index] = newTodo.copyWith(priorityLabel: _priorityLabelFromEnum(newTodo.priority));
+    notifyListeners();
+  }
+
+  List<Todo> filterByPriority(EisenhowerPriority? priority) {
+    if (priority == null) return _todos;
+    return _todos.where((todo) => todo.priority == priority).toList();
+  }
+
   List<Todo> getTodosByDate(DateTime date) {
     return _todos.where((todo) => todo.dueDate != null &&
       todo.dueDate!.year == date.year &&
       todo.dueDate!.month == date.month &&
       todo.dueDate!.day == date.day).toList();
+  }
+
+  String _priorityLabelFromEnum(EisenhowerPriority p) {
+    switch (p) {
+      case EisenhowerPriority.urgentImportant:
+        return 'Penting & Mendesak';
+      case EisenhowerPriority.importantNotUrgent:
+        return 'Penting & Tidak Mendesak';
+      case EisenhowerPriority.notImportantUrgent:
+        return 'Tidak Penting & Mendesak';
+      case EisenhowerPriority.notImportantNotUrgent:
+        return 'Tidak Penting & Tidak Mendesak';
+    }
   }
 }
