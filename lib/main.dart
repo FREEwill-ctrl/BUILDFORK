@@ -31,6 +31,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   ThemeMode _themeMode = ThemeMode.system;
+  String _customTheme = 'default';
 
   @override
   void initState() {
@@ -57,6 +58,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> _loadThemeMode() async {
     final prefs = await SharedPreferences.getInstance();
     final mode = prefs.getString('theme_mode') ?? 'system';
+    final custom = prefs.getString('custom_theme') ?? 'default';
     setState(() {
       if (mode == 'light') {
         _themeMode = ThemeMode.light;
@@ -65,16 +67,26 @@ class _MyAppState extends State<MyApp> {
       } else {
         _themeMode = ThemeMode.system;
       }
+      _customTheme = custom;
     });
   }
 
-  Future<void> setThemeMode(ThemeMode mode) async {
+  Future<void> setThemeMode(ThemeMode mode, {String custom = 'default'}) async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _themeMode = mode;
+      _customTheme = custom;
     });
     await prefs.setString('theme_mode',
         mode == ThemeMode.light ? 'light' : mode == ThemeMode.dark ? 'dark' : 'system');
+    await prefs.setString('custom_theme', custom);
+  }
+
+  ThemeData _getTheme() {
+    if (_customTheme == 'blue') return AppTheme.blueTheme;
+    if (_customTheme == 'green') return AppTheme.greenTheme;
+    if (_customTheme == 'red') return AppTheme.redTheme;
+    return AppTheme.lightTheme;
   }
 
   @override
@@ -88,10 +100,10 @@ class _MyAppState extends State<MyApp> {
         navigatorKey: navigatorKey,
         title: AppConstants.appName,
         debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
+        theme: _getTheme(),
         darkTheme: AppTheme.darkTheme,
         themeMode: _themeMode,
-        home: HomeScreen(onThemeModeChanged: setThemeMode, currentThemeMode: _themeMode),
+        home: HomeScreen(onThemeModeChanged: setThemeMode, currentThemeMode: _themeMode, customTheme: _customTheme),
       ),
     );
   }

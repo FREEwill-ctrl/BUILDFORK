@@ -136,4 +136,26 @@ class AppTheme {
       ),
     ),
   );
+
+  static ThemeData blueTheme = ThemeData(
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.blue,
+      brightness: Brightness.light,
+    ),
+  );
+  static ThemeData greenTheme = ThemeData(
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.green,
+      brightness: Brightness.light,
+    ),
+  );
+  static ThemeData redTheme = ThemeData(
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.red,
+      brightness: Brightness.light,
+    ),
+  );
 }

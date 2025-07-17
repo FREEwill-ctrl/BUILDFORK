@@ -13,9 +13,10 @@ import 'pomodoro_screen.dart';
 import '../main.dart';
 
 class HomeScreen extends StatefulWidget {
-  final void Function(ThemeMode)? onThemeModeChanged;
+  final void Function(ThemeMode, {String custom})? onThemeModeChanged;
   final ThemeMode? currentThemeMode;
-  const HomeScreen({Key? key, this.onThemeModeChanged, this.currentThemeMode}) : super(key: key);
+  final String? customTheme;
+  const HomeScreen({Key? key, this.onThemeModeChanged, this.currentThemeMode, this.customTheme}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -81,13 +82,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   provider.filterByCompleted(false);
                   break;
                 case 'theme_light':
-                  widget.onThemeModeChanged?.call(ThemeMode.light);
+                  widget.onThemeModeChanged?.call(ThemeMode.light, custom: 'default');
                   break;
                 case 'theme_dark':
-                  widget.onThemeModeChanged?.call(ThemeMode.dark);
+                  widget.onThemeModeChanged?.call(ThemeMode.dark, custom: 'default');
                   break;
                 case 'theme_system':
-                  widget.onThemeModeChanged?.call(ThemeMode.system);
+                  widget.onThemeModeChanged?.call(ThemeMode.system, custom: 'default');
+                  break;
+                case 'theme_blue':
+                  widget.onThemeModeChanged?.call(ThemeMode.light, custom: 'blue');
+                  break;
+                case 'theme_green':
+                  widget.onThemeModeChanged?.call(ThemeMode.light, custom: 'green');
+                  break;
+                case 'theme_red':
+                  widget.onThemeModeChanged?.call(ThemeMode.light, custom: 'red');
                   break;
               }
             },
@@ -109,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 value: 'theme_light',
                 child: Row(
                   children: [
-                    Icon(Icons.light_mode, color: widget.currentThemeMode == ThemeMode.light ? Theme.of(context).colorScheme.primary : null),
+                    Icon(Icons.light_mode, color: widget.currentThemeMode == ThemeMode.light && (widget.customTheme == null || widget.customTheme == 'default') ? Theme.of(context).colorScheme.primary : null),
                     const SizedBox(width: 8),
                     const Text('Light Mode'),
                   ],
@@ -132,6 +142,37 @@ class _HomeScreenState extends State<HomeScreen> {
                     Icon(Icons.brightness_auto, color: widget.currentThemeMode == ThemeMode.system ? Theme.of(context).colorScheme.primary : null),
                     const SizedBox(width: 8),
                     const Text('System Default'),
+                  ],
+                ),
+              ),
+              const PopupMenuDivider(),
+              PopupMenuItem(
+                value: 'theme_blue',
+                child: Row(
+                  children: [
+                    Icon(Icons.color_lens, color: widget.customTheme == 'blue' ? Colors.blue : null),
+                    const SizedBox(width: 8),
+                    const Text('Blue Theme'),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'theme_green',
+                child: Row(
+                  children: [
+                    Icon(Icons.color_lens, color: widget.customTheme == 'green' ? Colors.green : null),
+                    const SizedBox(width: 8),
+                    const Text('Green Theme'),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'theme_red',
+                child: Row(
+                  children: [
+                    Icon(Icons.color_lens, color: widget.customTheme == 'red' ? Colors.red : null),
+                    const SizedBox(width: 8),
+                    const Text('Red Theme'),
                   ],
                 ),
               ),
