@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/todo_model.dart';
 import '../providers/todo_provider.dart';
-import '../utils/constants.dart';
+import '../../../shared/constants.dart';
 import '../widgets/task_card.dart';
 import '../widgets/stats_card.dart';
 import '../widgets/priority_chip.dart';
-import '../widgets/celebration_widget.dart';
+import '../../../shared/celebration_widget.dart';
 import 'add_task_screen.dart';
 import 'edit_task_screen.dart';
-import 'pomodoro_screen.dart';
-import '../main.dart';
+import '../../pomodoro/screens/pomodoro_screen.dart';
 import 'package:file_picker/file_picker.dart';
 
 class HomeScreen extends StatefulWidget {
