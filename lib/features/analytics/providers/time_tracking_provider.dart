@@ -207,7 +207,7 @@ class TimeTrackingProvider extends ChangeNotifier {
       totalTimeSpent: Duration(minutes: totalMinutes.toInt()),
       tasksCompleted: tasksCompleted,
       pomodoroSessions: pomodoroSessions,
-      productivityScore: productivityScore,
+      productivityScore: productivityScore.toDouble(),
     );
   }
 
