@@ -10,7 +10,6 @@ import '../widgets/celebration_widget.dart';
 import 'add_task_screen.dart';
 import 'edit_task_screen.dart';
 import 'pomodoro_screen.dart';
-import 'package:home_widget/home_widget.dart';
 import '../main.dart';
 
 class HomeScreen extends StatefulWidget {
