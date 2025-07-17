@@ -18,6 +18,13 @@ class PomodoroScreen extends StatelessWidget {
               builder: (context) => const _PomodoroSettingsDialog(),
             ),
           ),
+          IconButton(
+            icon: Icon(Theme.of(context).brightness == Brightness.dark ? Icons.light_mode : Icons.dark_mode),
+            onPressed: () {
+              final isDark = Theme.of(context).brightness == Brightness.dark;
+              DynamicTheme.of(context)?.setTheme(isDark ? ThemeMode.light : ThemeMode.dark);
+            },
+          ),
         ],
       ),
       body: Center(
@@ -131,18 +138,20 @@ class PomodoroScreen extends StatelessWidget {
                         ),
                         onPressed: provider.reset,
                       ),
-                      const SizedBox(width: 16),
-                      ElevatedButton.icon(
-                        icon: const Icon(Icons.skip_next),
-                        label: const Text('Skip'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        ),
-                        onPressed: provider.skip,
-                      ),
                     ],
+                  ),
+                  const SizedBox(height: 16),
+                  Center(
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.skip_next),
+                      label: const Text('Skip'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                      ),
+                      onPressed: provider.skip,
+                    ),
                   ),
                   const SizedBox(height: 32),
                   _PomodoroStats(),
