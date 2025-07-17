@@ -8,7 +8,18 @@ class PomodoroScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Pomodoro Timer')),
+      appBar: AppBar(
+        title: const Text('Pomodoro Timer'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => const _PomodoroSettingsDialog(),
+            ),
+          ),
+        ],
+      ),
       body: Center(
         child: Consumer<PomodoroProvider>(
           builder: (context, provider, _) {
@@ -133,10 +144,123 @@ class PomodoroScreen extends StatelessWidget {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 32),
+                  _PomodoroStats(),
                 ],
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _PomodoroSettingsDialog extends StatefulWidget {
+  const _PomodoroSettingsDialog();
+
+  @override
+  State<_PomodoroSettingsDialog> createState() => _PomodoroSettingsDialogState();
+}
+
+class _PomodoroSettingsDialogState extends State<_PomodoroSettingsDialog> {
+  late TextEditingController pomodoroController;
+  late TextEditingController shortBreakController;
+  late TextEditingController longBreakController;
+
+  @override
+  void initState() {
+    final provider = Provider.of<PomodoroProvider>(context, listen: false);
+    pomodoroController = TextEditingController(text: (provider.pomodoroMinutes).toString());
+    shortBreakController = TextEditingController(text: (provider.shortBreakMinutes).toString());
+    longBreakController = TextEditingController(text: (provider.longBreakMinutes).toString());
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    pomodoroController.dispose();
+    shortBreakController.dispose();
+    longBreakController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Pengaturan Durasi'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: pomodoroController,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(labelText: 'Pomodoro (menit)'),
+          ),
+          TextField(
+            controller: shortBreakController,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(labelText: 'Short Break (menit)'),
+          ),
+          TextField(
+            controller: longBreakController,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(labelText: 'Long Break (menit)'),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Batal'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            final provider = Provider.of<PomodoroProvider>(context, listen: false);
+            final int pomodoro = int.tryParse(pomodoroController.text) ?? 25;
+            final int shortBreak = int.tryParse(shortBreakController.text) ?? 5;
+            final int longBreak = int.tryParse(longBreakController.text) ?? 15;
+            provider.setDurations(pomodoro, shortBreak, longBreak);
+            Navigator.pop(context);
+          },
+          child: const Text('Simpan'),
+        ),
+      ],
+    );
+  }
+}
+
+class _PomodoroStats extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final provider = Provider.of<PomodoroProvider>(context);
+    return Card(
+      elevation: 2,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Column(
+              children: [
+                const Text('Hari ini', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('${provider.todayPomodoro}'),
+              ],
+            ),
+            Column(
+              children: [
+                const Text('Minggu ini', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('${provider.weekPomodoro}'),
+              ],
+            ),
+            Column(
+              children: [
+                const Text('Total', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('${provider.totalPomodoro}'),
+              ],
+            ),
+          ],
         ),
       ),
     );

@@ -20,6 +20,7 @@ dependencies:
   timezone: ^0.9.2
   shared_preferences: ^2.2.2
   csv: ^5.1.1
+  audioplayers: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -32,3 +33,4 @@ flutter:
     - lib/assets/icons/add.png
     - lib/assets/icons/delete.png
     - lib/assets/icons/timer.png
+    - assets/
