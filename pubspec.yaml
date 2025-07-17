@@ -22,6 +22,8 @@ dependencies:
   csv: ^5.1.1
   audioplayers: ^5.2.1
   table_calendar: ^3.0.9
+  fl_chart: ^0.65.0
+  collection: ^1.17.0
 
 dev_dependencies:
   flutter_test:

@@ -23,6 +23,18 @@ class Todo {
   final List<String> attachments;
   final List<ChecklistItem> checklist;
 
+  // --- Time Tracking & Productivity ---
+  DateTime? startTime;
+  DateTime? endTime;
+  Duration totalTimeSpent;
+  int estimatedMinutes;
+  List<TimeSession> timeSessions;
+  bool isTimerActive;
+  DateTime? lastActiveTime;
+  int pomodoroSessionsCompleted;
+  double productivityScore;
+  TaskStatus status;
+
   Todo({
     this.id,
     required this.title,
@@ -62,3 +74,26 @@ class Todo {
     );
   }
 }
+
+// --- TimeSession Model ---
+class TimeSession {
+  final String id;
+  final DateTime startTime;
+  final DateTime endTime;
+  final Duration duration;
+  final String sessionType; // 'pomodoro', 'manual', 'focus'
+  final String taskId;
+  final bool wasCompleted;
+
+  TimeSession({
+    required this.id,
+    required this.startTime,
+    required this.endTime,
+    required this.duration,
+    required this.sessionType,
+    required this.taskId,
+    this.wasCompleted = false,
+  });
+}
+
+enum TaskStatus { notStarted, inProgress, paused, completed }
