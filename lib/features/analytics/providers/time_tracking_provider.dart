@@ -152,8 +152,25 @@ class TimeTrackingProvider extends ChangeNotifier {
     );
   }
 
+  // --- Caching for performance ---
+  Map<String, double>? _quadrantCache;
+  DateTime? _quadrantCacheTime;
+  Map<DateTime, double>? _heatmapCache;
+  DateTime? _heatmapCacheTime;
+
+  @override
+  void notifyListeners() {
+    // Invalidate cache on any update
+    _quadrantCache = null;
+    _heatmapCache = null;
+    super.notifyListeners();
+  }
+
   /// Returns a map of quadrant label to total time spent (in minutes)
   Map<String, double> getQuadrantTimeDistribution(BuildContext context) {
+    if (_quadrantCache != null && _quadrantCacheTime != null && DateTime.now().difference(_quadrantCacheTime!) < Duration(seconds: 10)) {
+      return _quadrantCache!;
+    }
     final todoProvider = Provider.of<TodoProvider>(context, listen: false);
     final todos = todoProvider.todos;
     final Map<String, double> result = {
@@ -169,11 +186,16 @@ class TimeTrackingProvider extends ChangeNotifier {
         result[key] = result[key]! + time;
       }
     }
+    _quadrantCache = result;
+    _quadrantCacheTime = DateTime.now();
     return result;
   }
 
   /// Returns a map of DateTime (day) to productivity score (0..1)
   Future<Map<DateTime, double>> getProductivityHeatmap(BuildContext context) async {
+    if (_heatmapCache != null && _heatmapCacheTime != null && DateTime.now().difference(_heatmapCacheTime!) < Duration(seconds: 10)) {
+      return _heatmapCache!;
+    }
     final todoProvider = Provider.of<TodoProvider>(context, listen: false);
     final todos = todoProvider.todos;
     final Map<DateTime, double> result = {};
@@ -186,6 +208,8 @@ class TimeTrackingProvider extends ChangeNotifier {
     }
     // Clamp to 1.0
     result.updateAll((k, v) => v > 1.0 ? 1.0 : v);
+    _heatmapCache = result;
+    _heatmapCacheTime = DateTime.now();
     return result;
   }
 
