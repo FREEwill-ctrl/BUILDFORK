@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../shared/constants.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app/features/todo/providers/todo_provider.dart';
+import '../../../features/todo/providers/todo_provider.dart';
 
 class StatsCard extends StatelessWidget {
   final int totalTodos;

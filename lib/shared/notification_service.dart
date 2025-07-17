@@ -2,7 +2,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     as fln;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
-import '../models/todo_model.dart';
+import '../features/todo/models/todo_model.dart';
 
 class NotificationService {
   static NotificationService? _instance;
