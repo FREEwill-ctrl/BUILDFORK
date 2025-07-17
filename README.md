@@ -1,71 +1,52 @@
 
 # Todo Modular Flutter App
 
-A modern, modular Todo & Pomodoro app built with Flutter. Mendukung prioritas Eisenhower, deadline dengan jam, mode malam/siang, upload file, dan build otomatis APK via GitHub Actions.
+A modern, modular Todo & Pomodoro app built with Flutter.
+
+## Struktur Proyek (Sederhana)
+```
+├── lib/
+│   ├── features/      # Fitur utama: todo, pomodoro, statistik
+│   ├── shared/        # Theme, provider, utilitas
+│   └── main.dart      # Entry point aplikasi
+├── assets/            # Ikon & suara
+├── android/           # Konfigurasi Android
+├── .github/workflows/ # CI/CD build APK
+├── pubspec.yaml       # Dependency
+```
 
 ## Fitur Utama
-- **Todo List** dengan prioritas Eisenhower (Penting & Mendesak, dst)
-- **Checklist**, deadline (tanggal & jam), dan upload lampiran file
-- **Edit, hapus, filter, dan tandai selesai** todo
-- **Kalender** untuk filter todo per tanggal
-- **Pomodoro Timer**: 25/5/15 menit, statistik, suara alarm, pengaturan durasi
-- **Statistik todo & pomodoro**
-- **Mode malam/siang** (toggle di semua halaman)
-- **Offline** (data lokal, tidak perlu login)
-- **Build APK otomatis** (CI/CD GitHub Actions)
-
-## Struktur Project
-```
-├── .github/workflows/         # CI/CD build & analyze APK
-├── android/                   # Android config
-├── assets/                    # Ikon & suara
-├── lib/
-│   ├── features/
-│   │   ├── todo/              # Todo list, kalender, filter, edit
-│   │   ├── pomodoro/          # Pomodoro timer & statistik
-│   │   └── stats/             # Statistik
-│   └── shared/                # Theme, constants, provider
-│   └── main.dart              # Entry point
-├── pubspec.yaml               # Dependencies
-└── README.md
-```
+- Todo List dengan prioritas Eisenhower (Penting & Mendesak, dst)
+- Checklist, deadline (tanggal & jam), upload file
+- Edit, hapus, filter, tandai selesai
+- Kalender filter todo
+- Pomodoro Timer (25/5/15 menit, statistik, alarm, pengaturan)
+- Statistik todo & pomodoro
+- Mode malam/siang (toggle di AppBar)
+- Offline (data lokal)
+- Build APK otomatis (GitHub Actions)
 
 ## Cara Menjalankan
-1. **Clone repo & install dependencies**
+1. **Install dependency:**
    ```bash
-   git clone <repo-url>
-   cd <repo-folder>
    flutter pub get
    ```
-2. **Jalankan aplikasi**
+2. **Jalankan aplikasi:**
    ```bash
    flutter run
    ```
-3. **Build APK release**
+3. **Build APK release:**
    ```bash
    flutter build apk --release
    ```
    APK ada di `build/app/outputs/flutter-apk/app-release.apk`
 
-## CI/CD: Build Otomatis APK
-- Setiap push ke `main` akan otomatis:
-  - `flutter analyze` (cek code style)
-  - Build APK release
-  - Upload APK ke GitHub Actions artifact
-- Workflow: `.github/workflows/build_android.yml`
-
-## Fitur Lain
-- **Mode malam/siang**: toggle di AppBar semua halaman
-- **Upload file**: lampirkan file ke todo (offline, hanya path lokal)
-- **Deadline dengan jam**: pilih tanggal & jam untuk tenggat todo
-- **Prioritas Eisenhower**: filter & label warna
-- **Statistik**: todo & pomodoro
-- **UI/UX modern**: Material 3, animasi smooth, responsif
-
-## Kontribusi
-Pull request & issue sangat diterima! Pastikan kode sudah lolos `flutter analyze` dan build APK sebelum mengirim PR.
+## CI/CD (Singkat)
+- Setiap push ke `main`:
+  - Jalankan `flutter analyze` & build APK release
+  - APK otomatis di-upload ke GitHub Actions artifact
 
 ---
 
-**Project ini open source & siap dikembangkan lebih lanjut!**
+**Project open source, siap dikembangkan lebih lanjut!**
 
