@@ -2,29 +2,21 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static final ThemeData lightTheme = ThemeData(
-    primarySwatch: Colors.blueGrey,
-    brightness: Brightness.light,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.blueGrey,
-      foregroundColor: Colors.white,
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.blue,
+      brightness: Brightness.light,
     ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: Colors.blueGrey,
-    ),
-    // Add more light theme properties as needed
+    fontFamily: 'Roboto',
   );
 
   static final ThemeData darkTheme = ThemeData(
-    primarySwatch: Colors.blueGrey,
-    brightness: Brightness.dark,
-    appBarTheme: AppBarTheme(
-      backgroundColor: Colors.blueGrey[800],
-      foregroundColor: Colors.white,
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.blue,
+      brightness: Brightness.dark,
     ),
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: Colors.blueGrey[700],
-    ),
-    // Add more dark theme properties as needed
+    fontFamily: 'Roboto',
   );
 
   static ThemeData customTheme(Color seedColor, String fontFamily) {
@@ -38,5 +30,3 @@ class AppTheme {
     );
   }
 }
-
-
