@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/time_session.dart';
+import '../models/daily_stats.dart';
 import '../services/time_tracking_storage.dart';
+import '../../todo/providers/todo_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import '../../todo/providers/todo_provider.dart';
-import '../../todo/models/todo_model.dart';
 
 class TimeTrackingProvider extends ChangeNotifier {
   Timer? _activeTimer;
@@ -14,6 +15,23 @@ class TimeTrackingProvider extends ChangeNotifier {
   DateTime? _sessionStartTime;
   Map<String, Duration> _taskTimers = {};
   final TimeTrackingStorage _storage = TimeTrackingStorage();
+
+  String? get activeTaskId => _activeTaskId;
+  Map<String, Duration> get taskTimers => _taskTimers;
+
+  // --- Caching for performance ---
+  Map<String, double>? _quadrantCache;
+  DateTime? _quadrantCacheTime;
+  Map<DateTime, double>? _heatmapCache;
+  DateTime? _heatmapCacheTime;
+
+  @override
+  void notifyListeners() {
+    // Invalidate cache on any update
+    _quadrantCache = null;
+    _heatmapCache = null;
+    super.notifyListeners();
+  }
 
   TimeTrackingProvider() {
     _restoreActiveTimer();
@@ -37,8 +55,6 @@ class TimeTrackingProvider extends ChangeNotifier {
 
   void _tick() {
     if (_activeTaskId == null || _sessionStartTime == null) return;
-    final now = DateTime.now();
-    final elapsed = now.difference(_sessionStartTime!);
     _taskTimers[_activeTaskId!] = (_taskTimers[_activeTaskId!] ?? Duration.zero) + Duration(seconds: 1);
     notifyListeners();
   }
@@ -122,50 +138,6 @@ class TimeTrackingProvider extends ChangeNotifier {
     return _taskTimers[taskId] ?? Duration.zero;
   }
 
-  Map<String, Duration> getDailyTimeDistribution() {
-    // TODO: Implement distribution logic
-    return {};
-  }
-
-  double calculateProductivityScore(String taskId) {
-    // TODO: Implement productivity score calculation
-    return 0.0;
-  }
-
-  // Integration dengan existing PomodoroProvider
-  String? _linkedTaskId;
-  void linkTaskWithPomodoro(String taskId) {
-    _linkedTaskId = taskId;
-  }
-
-  void syncPomodoroTaskTime(Duration pomodoroTime) {
-    if (_linkedTaskId != null) {
-      _taskTimers[_linkedTaskId!] = (_taskTimers[_linkedTaskId!] ?? Duration.zero) + pomodoroTime;
-      notifyListeners();
-    }
-  }
-
-  // Notifikasi stub: panggil ini saat Pomodoro selesai
-  void notifyPomodoroCompleted(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Pomodoro selesai! Waktumu sudah tercatat di task.')),
-    );
-  }
-
-  // --- Caching for performance ---
-  Map<String, double>? _quadrantCache;
-  DateTime? _quadrantCacheTime;
-  Map<DateTime, double>? _heatmapCache;
-  DateTime? _heatmapCacheTime;
-
-  @override
-  void notifyListeners() {
-    // Invalidate cache on any update
-    _quadrantCache = null;
-    _heatmapCache = null;
-    super.notifyListeners();
-  }
-
   /// Returns a map of quadrant label to total time spent (in minutes)
   Map<String, double> getQuadrantTimeDistribution(BuildContext context) {
     if (_quadrantCache != null && _quadrantCacheTime != null && DateTime.now().difference(_quadrantCacheTime!) < Duration(seconds: 10)) {
@@ -236,6 +208,26 @@ class TimeTrackingProvider extends ChangeNotifier {
       tasksCompleted: tasksCompleted,
       pomodoroSessions: pomodoroSessions,
       productivityScore: productivityScore,
+    );
+  }
+
+  // Integration dengan existing PomodoroProvider
+  String? _linkedTaskId;
+  void linkTaskWithPomodoro(String taskId) {
+    _linkedTaskId = taskId;
+  }
+
+  void syncPomodoroTaskTime(Duration pomodoroTime) {
+    if (_linkedTaskId != null) {
+      _taskTimers[_linkedTaskId!] = (_taskTimers[_linkedTaskId!] ?? Duration.zero) + pomodoroTime;
+      notifyListeners();
+    }
+  }
+
+  // Notifikasi stub: panggil ini saat Pomodoro selesai
+  void notifyPomodoroCompleted(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Pomodoro selesai! Waktumu sudah tercatat di task.')),
     );
   }
 

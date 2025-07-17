@@ -27,7 +27,6 @@ void main() {
 
   test('update and get total time', () async {
     await storage.updateTaskTimeSpent(taskId, Duration(minutes: 45));
-    // Directly check SharedPreferences for value
     final prefs = await SharedPreferences.getInstance();
     final timers = prefs.getString(TimeTrackingStorage.taskTimersKey);
     expect(timers, isNotNull);

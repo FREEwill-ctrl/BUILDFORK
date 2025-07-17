@@ -106,7 +106,7 @@ class TodoTile extends StatelessWidget {
               padding: const EdgeInsets.only(top: 8.0),
               child: Consumer<TimeTrackingProvider>(
                 builder: (context, timerProvider, _) {
-                  final isActive = timerProvider._activeTaskId == todo.id.toString();
+                  final isActive = timerProvider.activeTaskId == todo.id.toString();
                   final totalTime = timerProvider.getTaskTotalTime(todo.id.toString());
                   return TaskTimerWidget(
                     isActive: isActive,

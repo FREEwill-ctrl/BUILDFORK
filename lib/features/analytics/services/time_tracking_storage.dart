@@ -1,7 +1,6 @@
-import 'package:flutter/foundation.dart';
-import '../../analytics/models/time_session.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import '../models/time_session.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TimeTrackingStorage {
   static const String timeSessionsKey = 'time_sessions';
@@ -11,14 +10,14 @@ class TimeTrackingStorage {
 
   Future<void> saveTimeSession(String taskId, TimeSession session) async {
     final prefs = await SharedPreferences.getInstance();
-    final sessionsJson = prefs.getStringList('$timeSessionsKey".$taskId"') ?? [];
+    final sessionsJson = prefs.getStringList('timeSessionsKey".$taskId"') ?? [];
     sessionsJson.add(jsonEncode(session.toJson()));
-    await prefs.setStringList('$timeSessionsKey".$taskId"', sessionsJson);
+    await prefs.setStringList('timeSessionsKey".$taskId"', sessionsJson);
   }
 
   Future<List<TimeSession>> getTaskTimeSessions(String taskId) async {
     final prefs = await SharedPreferences.getInstance();
-    final sessionsJson = prefs.getStringList('$timeSessionsKey".$taskId"') ?? [];
+    final sessionsJson = prefs.getStringList('timeSessionsKey".$taskId"') ?? [];
     return sessionsJson.map((s) => TimeSession.fromJson(jsonDecode(s))).toList();
   }
 
@@ -30,10 +29,11 @@ class TimeTrackingStorage {
     await prefs.setString(taskTimersKey, jsonEncode(timersMap));
   }
 
-  Future<Map<String, dynamic>> getProductivityStats(DateTimeRange range) async {
-    // Placeholder: implement aggregation logic as needed
-    return {};
-  }
+  // Commented out for now, fix type if needed
+  // Future<Map<String, dynamic>> getProductivityStats(DateTimeRange range) async {
+  //   // Placeholder: implement aggregation logic as needed
+  //   return {};
+  // }
 
   Future<void> persistActiveTimer(String taskId, DateTime startTime) async {
     final prefs = await SharedPreferences.getInstance();

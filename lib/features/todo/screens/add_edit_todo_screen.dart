@@ -114,7 +114,7 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
                       padding: const EdgeInsets.only(top: 12.0, bottom: 8.0),
                       child: Consumer<TimeTrackingProvider>(
                         builder: (context, timerProvider, _) {
-                          final isActive = timerProvider._activeTaskId == widget.todo!.id.toString();
+                          final isActive = timerProvider.activeTaskId == widget.todo!.id.toString();
                           final totalTime = timerProvider.getTaskTotalTime(widget.todo!.id.toString());
                           return TaskTimerWidget(
                             isActive: isActive,

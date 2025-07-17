@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import '../../analytics/providers/time_tracking_provider.dart';
+import '../../../main.dart';
 
 enum PomodoroState { initial, running, paused, stopped }
 
@@ -38,6 +40,7 @@ class PomodoroProvider with ChangeNotifier {
   int get totalPomodoro => _totalPomodoro;
 
   String? _linkedTaskId;
+  String? get linkedTaskId => _linkedTaskId;
   void linkToTask(String taskId) {
     _linkedTaskId = taskId;
   }

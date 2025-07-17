@@ -38,7 +38,7 @@ class PomodoroScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: DropdownButtonFormField<String>(
-              value: pomodoroProvider._linkedTaskId,
+              value: pomodoroProvider.linkedTaskId,
               items: todos.map((t) => DropdownMenuItem(value: t.id.toString(), child: Text(t.title))).toList(),
               onChanged: (val) {
                 if (val != null) pomodoroProvider.linkToTask(val);
