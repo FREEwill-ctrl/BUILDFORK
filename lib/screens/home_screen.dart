@@ -11,6 +11,8 @@ import 'add_task_screen.dart';
 import 'edit_task_screen.dart';
 import 'pomodoro_screen.dart';
 import '../main.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
 
 class HomeScreen extends StatefulWidget {
   final void Function(ThemeMode, {String custom})? onThemeModeChanged;
@@ -69,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           PopupMenuButton<String>(
-            onSelected: (value) {
+            onSelected: (value) async {
               final provider = context.read<TodoProvider>();
               switch (value) {
                 case 'all':
@@ -98,6 +100,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   break;
                 case 'theme_red':
                   widget.onThemeModeChanged?.call(ThemeMode.light, custom: 'red');
+                  break;
+                case 'export_csv':
+                  final result = await FilePicker.platform.getDirectoryPath();
+                  if (result != null) {
+                    final path = '$result/todos_export_${DateTime.now().millisecondsSinceEpoch}.csv';
+                    await provider.exportToCsv(path);
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Exported to $path')),
+                      );
+                    }
+                  }
+                  break;
+                case 'import_csv':
+                  final result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['csv']);
+                  if (result != null && result.files.single.path != null) {
+                    final imported = await provider.importFromCsv(result.files.single.path!);
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Imported $imported tasks')), 
+                      );
+                    }
+                  }
                   break;
               }
             },
@@ -173,6 +198,27 @@ class _HomeScreenState extends State<HomeScreen> {
                     Icon(Icons.color_lens, color: widget.customTheme == 'red' ? Colors.red : null),
                     const SizedBox(width: 8),
                     const Text('Red Theme'),
+                  ],
+                ),
+              ),
+              const PopupMenuDivider(),
+              PopupMenuItem(
+                value: 'export_csv',
+                child: Row(
+                  children: [
+                    Icon(Icons.download, color: Colors.blue),
+                    SizedBox(width: 8),
+                    Text('Export to CSV'),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'import_csv',
+                child: Row(
+                  children: [
+                    Icon(Icons.upload, color: Colors.green),
+                    SizedBox(width: 8),
+                    Text('Import from CSV'),
                   ],
                 ),
               ),

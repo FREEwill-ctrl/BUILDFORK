@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import '../models/todo_model.dart';
 import '../services/database_service.dart';
 import '../services/notification_service.dart';
+import 'package:csv/csv.dart';
+import 'dart:io';
 
 class TodoProvider with ChangeNotifier {
   final DatabaseService _databaseService = DatabaseService();
@@ -179,5 +181,56 @@ class TodoProvider with ChangeNotifier {
       _errorMessage = 'Error getting todo by id: $e';
       return null;
     }
+  }
+
+  Future<String> exportToCsv(String filePath) async {
+    List<List<dynamic>> rows = [
+      [
+        'id', 'title', 'description', 'createdAt', 'dueDate', 'priority', 'isCompleted', 'attachments', 'checklist', 'theme'
+      ],
+      ..._todos.map((todo) => [
+        todo.id ?? '',
+        todo.title,
+        todo.description,
+        todo.createdAt.millisecondsSinceEpoch,
+        todo.dueDate?.millisecondsSinceEpoch ?? '',
+        todo.priority.index,
+        todo.isCompleted ? 1 : 0,
+        todo.attachments.join('|'),
+        ChecklistItem.encodeList(todo.checklist),
+        todo.theme ?? '',
+      ])
+    ];
+    String csvData = const ListToCsvConverter().convert(rows);
+    final file = File(filePath);
+    await file.writeAsString(csvData);
+    return file.path;
+  }
+
+  Future<int> importFromCsv(String filePath) async {
+    final file = File(filePath);
+    if (!await file.exists()) return 0;
+    final csvData = await file.readAsString();
+    final rows = const CsvToListConverter().convert(csvData, eol: '\n');
+    int imported = 0;
+    for (int i = 1; i < rows.length; i++) {
+      final row = rows[i];
+      try {
+        final todo = Todo(
+          title: row[1] ?? '',
+          description: row[2] ?? '',
+          createdAt: DateTime.fromMillisecondsSinceEpoch(int.tryParse(row[3].toString()) ?? DateTime.now().millisecondsSinceEpoch),
+          dueDate: row[4] != '' ? DateTime.fromMillisecondsSinceEpoch(int.tryParse(row[4].toString()) ?? 0) : null,
+          priority: Priority.values[int.tryParse(row[5].toString()) ?? 1],
+          isCompleted: row[6] == 1,
+          attachments: row[7] != '' ? (row[7] as String).split('|') : [],
+          checklist: row[8] != '' ? ChecklistItem.decodeList(row[8]) : [],
+          theme: row[9] != '' ? row[9] : null,
+        );
+        await addTodo(todo);
+        imported++;
+      } catch (_) {}
+    }
+    return imported;
   }
 }
