@@ -5,7 +5,7 @@ import 'features/pomodoro/providers/pomodoro_provider.dart';
 import 'shared/app_theme.dart';
 import 'features/todo/screens/home_screen.dart';
 import 'features/pomodoro/screens/pomodoro_screen.dart';
-import 'shared/theme_provider.dart';
+// ThemeProvider sudah ada di app_theme.dart
 
 void main() {
   runApp(const TodoModularApp());

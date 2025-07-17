@@ -4,7 +4,7 @@ import '../providers/todo_provider.dart';
 import '../models/todo_model.dart';
 import '../widgets/todo_tile.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../../shared/app_theme.dart';
+import 'package:todo_modular/shared/app_theme.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
