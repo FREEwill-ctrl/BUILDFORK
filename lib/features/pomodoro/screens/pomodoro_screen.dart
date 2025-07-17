@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/pomodoro_provider.dart';
+import '../../../shared/app_theme.dart';
 
 class PomodoroScreen extends StatelessWidget {
   const PomodoroScreen({super.key});
@@ -21,8 +22,7 @@ class PomodoroScreen extends StatelessWidget {
           IconButton(
             icon: Icon(Theme.of(context).brightness == Brightness.dark ? Icons.light_mode : Icons.dark_mode),
             onPressed: () {
-              final isDark = Theme.of(context).brightness == Brightness.dark;
-              DynamicTheme.of(context)?.setTheme(isDark ? ThemeMode.light : ThemeMode.dark);
+              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
             },
           ),
         ],
