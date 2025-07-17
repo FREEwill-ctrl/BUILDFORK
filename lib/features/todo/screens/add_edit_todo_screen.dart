@@ -95,11 +95,15 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
                   const SizedBox(height: 8),
                   TextField(
                     controller: _descController,
-                    maxLines: 4,
+                    minLines: 4,
+                    maxLines: 12,
+                    expands: false,
+                    textAlignVertical: TextAlignVertical.top,
                     style: const TextStyle(fontSize: 18),
                     decoration: const InputDecoration(
                       labelText: 'Description',
                       border: InputBorder.none,
+                      alignLabelWithHint: true,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -117,19 +121,14 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
                               lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
                             );
                             if (pickedDate != null) {
-                              final pickedTime = await showTimePicker(
-                                context: context,
-                                initialTime: _dueTime ?? const TimeOfDay(hour: 23, minute: 59),
-                              );
                               setState(() {
                                 _dueDate = DateTime(
                                   pickedDate.year,
                                   pickedDate.month,
                                   pickedDate.day,
-                                  pickedTime?.hour ?? 23,
-                                  pickedTime?.minute ?? 59,
+                                  _dueTime?.hour ?? 23,
+                                  _dueTime?.minute ?? 59,
                                 );
-                                _dueTime = pickedTime ?? const TimeOfDay(hour: 23, minute: 59);
                               });
                             }
                           },
@@ -138,12 +137,49 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
                             child: Text(
                               _dueDate == null
                                 ? 'Tenggat (Deadline)'
-                                : '${_dueDate!.day}/${_dueDate!.month}/${_dueDate!.year}  ${_dueTime?.format(context) ?? ''}',
+                                : '${_dueDate!.day}/${_dueDate!.month}/${_dueDate!.year}',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: _dueDate == null ? Colors.grey : Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () async {
+                          final pickedTime = await showTimePicker(
+                            context: context,
+                            initialTime: _dueTime ?? const TimeOfDay(hour: 23, minute: 59),
+                          );
+                          if (pickedTime != null) {
+                            setState(() {
+                              _dueTime = pickedTime;
+                              if (_dueDate != null) {
+                                _dueDate = DateTime(
+                                  _dueDate!.year,
+                                  _dueDate!.month,
+                                  _dueDate!.day,
+                                  pickedTime.hour,
+                                  pickedTime.minute,
+                                );
+                              }
+                            });
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.access_time, size: 18),
+                              const SizedBox(width: 4),
+                              Text(_dueTime?.format(context) ?? 'Jam'),
+                            ],
                           ),
                         ),
                       ),
