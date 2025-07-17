@@ -184,6 +184,7 @@ class NotificationService {
         enableVibration: true,
         enableLights: true,
         channelShowBadge: true,
+        category: fln.AndroidNotificationCategory.alarm,
       );
 
       final fln.NotificationDetails platformChannelSpecifics =
@@ -199,6 +200,37 @@ class NotificationService {
       print('Pomodoro notification sent successfully');
     } catch (e) {
       print('Error showing Pomodoro notification: $e');
+      // Fallback: try without custom sound
+      try {
+        print('Trying fallback notification without custom sound...');
+        final fln.AndroidNotificationDetails fallbackDetails =
+            fln.AndroidNotificationDetails(
+          'pomodoro_channel',
+          'Pomodoro Notifications',
+          channelDescription: 'Notifications for Pomodoro timer',
+          importance: fln.Importance.max,
+          priority: fln.Priority.high,
+          playSound: true,
+          enableVibration: true,
+          enableLights: true,
+          channelShowBadge: true,
+          category: fln.AndroidNotificationCategory.alarm,
+        );
+
+        final fln.NotificationDetails fallbackPlatformDetails =
+            fln.NotificationDetails(android: fallbackDetails);
+
+        await _flutterLocalNotificationsPlugin.show(
+          id,
+          title,
+          body,
+          fallbackPlatformDetails,
+        );
+        
+        print('Fallback notification sent successfully');
+      } catch (fallbackError) {
+        print('Error showing fallback notification: $fallbackError');
+      }
     }
   }
 }
