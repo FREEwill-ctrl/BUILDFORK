@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/pomodoro_provider.dart';
-import '../utils/constants.dart';
+import '../../../shared/constants.dart';
 
 class PomodoroScreen extends StatelessWidget {
   const PomodoroScreen({Key? key}) : super(key: key);
