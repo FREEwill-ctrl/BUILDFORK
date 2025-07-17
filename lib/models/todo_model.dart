@@ -6,6 +6,9 @@ class Todo {
   final DateTime? dueDate;
   final Priority priority;
   final bool isCompleted;
+  final List<String> attachments;
+  final List<ChecklistItem> checklist;
+  final String? theme;
 
   Todo({
     this.id,
@@ -15,6 +18,9 @@ class Todo {
     this.dueDate,
     required this.priority,
     this.isCompleted = false,
+    this.attachments = const [],
+    this.checklist = const [],
+    this.theme,
   });
 
   Map<String, dynamic> toMap() {
@@ -26,6 +32,9 @@ class Todo {
       'dueDate': dueDate?.millisecondsSinceEpoch,
       'priority': priority.index,
       'isCompleted': isCompleted ? 1 : 0,
+      'attachments': attachments.join(','),
+      'checklist': ChecklistItem.encodeList(checklist),
+      'theme': theme,
     };
   }
 
@@ -40,6 +49,13 @@ class Todo {
           : null,
       priority: Priority.values[map['priority']],
       isCompleted: map['isCompleted'] == 1,
+      attachments: map['attachments'] != null && map['attachments'] != ''
+          ? (map['attachments'] as String).split(',')
+          : [],
+      checklist: map['checklist'] != null && map['checklist'] != ''
+          ? ChecklistItem.decodeList(map['checklist'])
+          : [],
+      theme: map['theme'],
     );
   }
 
@@ -51,6 +67,9 @@ class Todo {
     DateTime? dueDate,
     Priority? priority,
     bool? isCompleted,
+    List<String>? attachments,
+    List<ChecklistItem>? checklist,
+    String? theme,
   }) {
     return Todo(
       id: id ?? this.id,
@@ -60,8 +79,30 @@ class Todo {
       dueDate: dueDate ?? this.dueDate,
       priority: priority ?? this.priority,
       isCompleted: isCompleted ?? this.isCompleted,
+      attachments: attachments ?? this.attachments,
+      checklist: checklist ?? this.checklist,
+      theme: theme ?? this.theme,
     );
   }
+}
+
+class ChecklistItem {
+  final String text;
+  final bool isDone;
+  ChecklistItem({required this.text, this.isDone = false});
+
+  Map<String, dynamic> toMap() => {'text': text, 'isDone': isDone ? 1 : 0};
+  factory ChecklistItem.fromMap(Map<String, dynamic> map) => ChecklistItem(
+        text: map['text'],
+        isDone: map['isDone'] == 1,
+      );
+  static String encodeList(List<ChecklistItem> items) =>
+      items.map((e) => '${e.text}|${e.isDone ? 1 : 0}').join(';');
+  static List<ChecklistItem> decodeList(String s) =>
+      s.isEmpty ? [] : s.split(';').map((e) {
+        final parts = e.split('|');
+        return ChecklistItem(text: parts[0], isDone: parts.length > 1 && parts[1] == '1');
+      }).toList();
 }
 
 enum Priority {
