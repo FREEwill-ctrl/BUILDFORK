@@ -65,44 +65,86 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(widget.todo == null ? 'Add Todo' : 'Edit Todo')),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(controller: _titleController, decoration: const InputDecoration(labelText: 'Title')),
-            const SizedBox(height: 8),
-            TextField(controller: _descController, decoration: const InputDecoration(labelText: 'Description')),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Text('Tenggat: '),
-                Text(_dueDate == null ? '-' : '${_dueDate!.day}/${_dueDate!.month}/${_dueDate!.year}'),
-                IconButton(
-                  icon: const Icon(Icons.calendar_today),
-                  onPressed: () async {
-                    final picked = await showDatePicker(
-                      context: context,
-                      initialDate: _dueDate ?? DateTime.now(),
-                      firstDate: DateTime.now().subtract(const Duration(days: 365)),
-                      lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
-                    );
-                    if (picked != null) setState(() => _dueDate = picked);
-                  },
-                ),
-              ],
+            Container(
+              color: Theme.of(context).colorScheme.surface,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    controller: _titleController,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Montserrat',
+                      letterSpacing: 0.5,
+                    ),
+                    decoration: const InputDecoration(
+                      labelText: 'Title',
+                      border: InputBorder.none,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _descController,
+                    maxLines: 4,
+                    style: const TextStyle(fontSize: 18),
+                    decoration: const InputDecoration(
+                      labelText: 'Description',
+                      border: InputBorder.none,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      const Icon(Icons.calendar_today, size: 20),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () async {
+                            final picked = await showDatePicker(
+                              context: context,
+                              initialDate: _dueDate ?? DateTime.now(),
+                              firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                              lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+                            );
+                            if (picked != null) setState(() => _dueDate = picked);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              _dueDate == null ? 'Tenggat (Deadline)' : '${_dueDate!.day}/${_dueDate!.month}/${_dueDate!.year}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: _dueDate == null ? Colors.grey : Theme.of(context).colorScheme.onSurface,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<EisenhowerPriority>(
+                    value: _priority,
+                    isExpanded: true,
+                    items: const [
+                      DropdownMenuItem(value: EisenhowerPriority.urgentImportant, child: Text('Penting & Mendesak')),
+                      DropdownMenuItem(value: EisenhowerPriority.importantNotUrgent, child: Text('Penting & Tidak Mendesak')),
+                      DropdownMenuItem(value: EisenhowerPriority.notImportantUrgent, child: Text('Tidak Penting & Mendesak')),
+                      DropdownMenuItem(value: EisenhowerPriority.notImportantNotUrgent, child: Text('Tidak Penting & Tidak Mendesak')),
+                    ],
+                    onChanged: (val) => setState(() => _priority = val),
+                    decoration: const InputDecoration(labelText: 'Prioritas', border: InputBorder.none),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 8),
-            DropdownButtonFormField<EisenhowerPriority>(
-              value: _priority,
-              items: const [
-                DropdownMenuItem(value: EisenhowerPriority.urgentImportant, child: Text('Penting & Mendesak')),
-                DropdownMenuItem(value: EisenhowerPriority.importantNotUrgent, child: Text('Penting & Tidak Mendesak')),
-                DropdownMenuItem(value: EisenhowerPriority.notImportantUrgent, child: Text('Tidak Penting & Mendesak')),
-                DropdownMenuItem(value: EisenhowerPriority.notImportantNotUrgent, child: Text('Tidak Penting & Tidak Mendesak')),
-              ],
-              onChanged: (val) => setState(() => _priority = val),
-              decoration: const InputDecoration(labelText: 'Prioritas'),
-            ),
+            const Divider(height: 1),
             const SizedBox(height: 8),
             Row(
               children: [
