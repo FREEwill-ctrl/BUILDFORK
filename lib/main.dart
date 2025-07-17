@@ -6,6 +6,7 @@ import 'shared/app_theme.dart';
 import 'features/todo/screens/home_screen.dart';
 import 'features/pomodoro/screens/pomodoro_screen.dart';
 import 'features/time_tracking/providers/time_tracking_provider.dart';
+import 'features/analytics/screens/analytics_dashboard.dart';
 // ThemeProvider sudah ada di app_theme.dart
 
 void main() {
@@ -50,6 +51,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
   static final List<Widget> _pages = [
     HomeScreen(),
     PomodoroScreen(),
+    AnalyticsDashboard(),
   ];
 
   void _onItemTapped(int index) {
@@ -73,6 +75,10 @@ class _MainTabScreenState extends State<MainTabScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.timer),
             label: 'Pomodoro',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.analytics),
+            label: 'Analytics',
           ),
         ],
       ),
