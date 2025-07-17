@@ -4,6 +4,7 @@ import 'features/todo/providers/todo_provider.dart';
 import 'features/pomodoro/providers/pomodoro_provider.dart';
 import 'shared/app_theme.dart';
 import 'features/todo/screens/home_screen.dart';
+import 'features/pomodoro/screens/pomodoro_screen.dart';
 
 void main() {
   runApp(const TodoModularApp());
@@ -25,7 +26,49 @@ class TodoModularApp extends StatelessWidget {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,
-        home: const HomeScreen(),
+        home: const MainTabScreen(),
+      ),
+    );
+  }
+}
+
+class MainTabScreen extends StatefulWidget {
+  const MainTabScreen({super.key});
+
+  @override
+  State<MainTabScreen> createState() => _MainTabScreenState();
+}
+
+class _MainTabScreenState extends State<MainTabScreen> {
+  int _selectedIndex = 0;
+  static final List<Widget> _pages = [
+    HomeScreen(),
+    PomodoroScreen(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.check_circle_outline),
+            label: 'Todo',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.timer),
+            label: 'Pomodoro',
+          ),
+        ],
       ),
     );
   }
