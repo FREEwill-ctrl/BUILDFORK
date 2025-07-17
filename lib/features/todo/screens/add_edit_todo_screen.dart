@@ -16,6 +16,7 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
   DateTime? _dueDate;
+  TimeOfDay? _dueTime;
   EisenhowerPriority? _priority = EisenhowerPriority.urgentImportant;
   bool _isCompleted = false;
   List<ChecklistItem> _checklist = [];
@@ -29,6 +30,9 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
       _titleController.text = widget.todo!.title;
       _descController.text = widget.todo!.description;
       _dueDate = widget.todo!.dueDate;
+      if (_dueDate != null) {
+        _dueTime = TimeOfDay(hour: _dueDate!.hour, minute: _dueDate!.minute);
+      }
       _priority = widget.todo!.priority;
       _isCompleted = widget.todo!.isCompleted;
       _checklist = List.from(widget.todo!.checklist);
@@ -106,18 +110,35 @@ class _AddEditTodoScreenState extends State<AddEditTodoScreen> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () async {
-                            final picked = await showDatePicker(
+                            final pickedDate = await showDatePicker(
                               context: context,
                               initialDate: _dueDate ?? DateTime.now(),
                               firstDate: DateTime.now().subtract(const Duration(days: 365)),
                               lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
                             );
-                            if (picked != null) setState(() => _dueDate = picked);
+                            if (pickedDate != null) {
+                              final pickedTime = await showTimePicker(
+                                context: context,
+                                initialTime: _dueTime ?? const TimeOfDay(hour: 23, minute: 59),
+                              );
+                              setState(() {
+                                _dueDate = DateTime(
+                                  pickedDate.year,
+                                  pickedDate.month,
+                                  pickedDate.day,
+                                  pickedTime?.hour ?? 23,
+                                  pickedTime?.minute ?? 59,
+                                );
+                                _dueTime = pickedTime ?? const TimeOfDay(hour: 23, minute: 59);
+                              });
+                            }
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             child: Text(
-                              _dueDate == null ? 'Tenggat (Deadline)' : '${_dueDate!.day}/${_dueDate!.month}/${_dueDate!.year}',
+                              _dueDate == null
+                                ? 'Tenggat (Deadline)'
+                                : '${_dueDate!.day}/${_dueDate!.month}/${_dueDate!.year}  ${_dueTime?.format(context) ?? ''}',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: _dueDate == null ? Colors.grey : Theme.of(context).colorScheme.onSurface,
