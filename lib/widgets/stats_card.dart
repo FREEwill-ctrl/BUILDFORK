@@ -179,6 +179,10 @@ class StatsCard extends StatelessWidget {
               ),
             ),
 
+            // Statistik lanjutan/insight
+            const SizedBox(height: 8),
+            _AdvancedStats(),
+
             // Notification icon di statistik
             if (hasNotification) ...[
               Row(
@@ -327,5 +331,85 @@ class CompactStatsCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _AdvancedStats extends StatelessWidget {
+  const _AdvancedStats({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final todoProvider = Provider.of<TodoProvider>(context, listen: false);
+    final completedPerDay = todoProvider.completedPerDay;
+    final totalCompleted = todoProvider.completedTodos;
+    final avgPerDay = completedPerDay.values.isNotEmpty
+        ? (completedPerDay.values.reduce((a, b) => a + b) / completedPerDay.length).toStringAsFixed(1)
+        : '0';
+    final mostProductiveDay = completedPerDay.entries.isNotEmpty
+        ? completedPerDay.entries.reduce((a, b) => a.value > b.value ? a : b).key
+        : null;
+    String productiveDayStr = mostProductiveDay != null
+        ? '${_weekdayName(mostProductiveDay.weekday)} (${mostProductiveDay.month}/${mostProductiveDay.day})'
+        : '-';
+    // Rekomendasi waktu produktif (dummy: pagi jika banyak selesai sebelum jam 12, sore jika banyak setelah jam 12)
+    // Untuk demo, asumsikan rata-rata jam selesai tugas
+    final todos = todoProvider.todos.where((t) => t.isCompleted && t.dueDate != null).toList();
+    double avgHour = todos.isNotEmpty
+        ? todos.map((t) => t.dueDate!.hour.toDouble()).reduce((a, b) => a + b) / todos.length
+        : 0;
+    String bestTime = avgHour < 12 ? 'Pagi' : avgHour < 18 ? 'Siang/Sore' : 'Malam';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Insight', style: AppConstants.bodyStyle.copyWith(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 4),
+        Row(
+          children: [
+            const Icon(Icons.calendar_today, size: 16),
+            const SizedBox(width: 4),
+            Text('Hari paling produktif: ', style: AppConstants.captionStyle),
+            Text(productiveDayStr, style: AppConstants.captionStyle.copyWith(fontWeight: FontWeight.bold)),
+          ],
+        ),
+        Row(
+          children: [
+            const Icon(Icons.bar_chart, size: 16),
+            const SizedBox(width: 4),
+            Text('Rata-rata tugas selesai/hari: ', style: AppConstants.captionStyle),
+            Text(avgPerDay, style: AppConstants.captionStyle.copyWith(fontWeight: FontWeight.bold)),
+          ],
+        ),
+        Row(
+          children: [
+            const Icon(Icons.access_time, size: 16),
+            const SizedBox(width: 4),
+            Text('Waktu produktif: ', style: AppConstants.captionStyle),
+            Text(bestTime, style: AppConstants.captionStyle.copyWith(fontWeight: FontWeight.bold)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  String _weekdayName(int weekday) {
+    switch (weekday) {
+      case 1:
+        return 'Senin';
+      case 2:
+        return 'Selasa';
+      case 3:
+        return 'Rabu';
+      case 4:
+        return 'Kamis';
+      case 5:
+        return 'Jumat';
+      case 6:
+        return 'Sabtu';
+      case 7:
+        return 'Minggu';
+      default:
+        return '-';
+    }
   }
 }
