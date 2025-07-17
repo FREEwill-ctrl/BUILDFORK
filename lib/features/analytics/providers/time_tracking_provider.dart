@@ -132,13 +132,24 @@ class TimeTrackingProvider extends ChangeNotifier {
     return 0.0;
   }
 
-  void linkTaskWithPomodoro(String taskId, String pomodoroSessionId) {
-    // TODO: Implement linking logic
+  // Integration dengan existing PomodoroProvider
+  String? _linkedTaskId;
+  void linkTaskWithPomodoro(String taskId) {
+    _linkedTaskId = taskId;
   }
 
-  void syncPomodoroTaskTime(String taskId, Duration pomodoroTime) {
-    _taskTimers[taskId] = (_taskTimers[taskId] ?? Duration.zero) + pomodoroTime;
-    notifyListeners();
+  void syncPomodoroTaskTime(Duration pomodoroTime) {
+    if (_linkedTaskId != null) {
+      _taskTimers[_linkedTaskId!] = (_taskTimers[_linkedTaskId!] ?? Duration.zero) + pomodoroTime;
+      notifyListeners();
+    }
+  }
+
+  // Notifikasi stub: panggil ini saat Pomodoro selesai
+  void notifyPomodoroCompleted(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Pomodoro selesai! Waktumu sudah tercatat di task.')),
+    );
   }
 
   /// Returns a map of quadrant label to total time spent (in minutes)

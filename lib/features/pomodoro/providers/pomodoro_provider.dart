@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../analytics/providers/time_tracking_provider.dart';
 
 enum PomodoroState { initial, running, paused, stopped }
 
@@ -35,6 +36,11 @@ class PomodoroProvider with ChangeNotifier {
   int get todayPomodoro => _todayPomodoro;
   int get weekPomodoro => _weekPomodoro;
   int get totalPomodoro => _totalPomodoro;
+
+  String? _linkedTaskId;
+  void linkToTask(String taskId) {
+    _linkedTaskId = taskId;
+  }
 
   PomodoroProvider() {
     _loadStats();
@@ -104,6 +110,16 @@ class PomodoroProvider with ChangeNotifier {
 
   void _onSessionComplete() {
     _playAlarm();
+    // Integrasi dengan TimeTrackingProvider
+    if (_sessionType == SessionType.pomodoro && _linkedTaskId != null) {
+      final context = navigatorKey.currentContext;
+      if (context != null) {
+        final timeTracking = Provider.of<TimeTrackingProvider>(context, listen: false);
+        timeTracking.linkTaskWithPomodoro(_linkedTaskId!);
+        timeTracking.syncPomodoroTaskTime(Duration(seconds: _pomodoroDuration));
+        timeTracking.notifyPomodoroCompleted(context);
+      }
+    }
     // Placeholder: trigger notifikasi jika perlu
     // _showNotification();
     if (_sessionType == SessionType.pomodoro) {
