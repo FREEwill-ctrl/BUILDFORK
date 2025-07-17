@@ -26,6 +26,17 @@ class AppTheme {
     ),
     // Add more dark theme properties as needed
   );
+
+  static ThemeData customTheme(Color seedColor, String fontFamily) {
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: seedColor,
+        brightness: Brightness.light,
+      ),
+      fontFamily: fontFamily,
+    );
+  }
 }
 
 

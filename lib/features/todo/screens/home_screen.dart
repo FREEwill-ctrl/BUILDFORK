@@ -11,6 +11,7 @@ import 'add_task_screen.dart';
 import 'edit_task_screen.dart';
 import '../../pomodoro/screens/pomodoro_screen.dart';
 import 'package:file_picker/file_picker.dart';
+import '../../../../lib/main.dart' show updateHomeWidget;
 
 class HomeScreen extends StatefulWidget {
   final void Function(ThemeMode, {String custom, String? fontFamily})? onThemeModeChanged;
