@@ -27,10 +27,15 @@ class PomodoroProvider with ChangeNotifier {
   SessionType _sessionType = SessionType.pomodoro;
   int _pomodoroCount = 0;
 
+  // Statistik sesi
+  final List<PomodoroSession> _sessions = [];
+  DateTime? _currentSessionStart;
+
   int get secondsRemaining => _secondsRemaining;
   PomodoroState get state => _state;
   SessionType get sessionType => _sessionType;
   int get pomodoroCount => _pomodoroCount;
+  List<PomodoroSession> get sessions => List.unmodifiable(_sessions);
 
   String get formattedTime {
     int minutes = _secondsRemaining ~/ 60;
@@ -40,14 +45,15 @@ class PomodoroProvider with ChangeNotifier {
 
   void startTimer() {
     if (_state == PomodoroState.running) return;
-
     _state = PomodoroState.running;
+    _currentSessionStart = DateTime.now();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_secondsRemaining > 0) {
         _secondsRemaining--;
       } else {
         _timer?.cancel();
         _state = PomodoroState.stopped;
+        _endSession();
         _moveToNextSession();
       }
       notifyListeners();
@@ -75,6 +81,17 @@ class PomodoroProvider with ChangeNotifier {
     _secondsRemaining = _pomodoroDuration; // Reset to initial pomodoro duration
     _sessionType = SessionType.pomodoro;
     notifyListeners();
+  }
+
+  void _endSession() {
+    if (_currentSessionStart != null) {
+      _sessions.add(PomodoroSession(
+        type: _sessionType,
+        start: _currentSessionStart!,
+        end: DateTime.now(),
+      ));
+      _currentSessionStart = null;
+    }
   }
 
   void _moveToNextSession() {
@@ -110,6 +127,14 @@ class PomodoroProvider with ChangeNotifier {
     _timer?.cancel();
     super.dispose();
   }
+}
+
+class PomodoroSession {
+  final SessionType type;
+  final DateTime start;
+  final DateTime end;
+  PomodoroSession({required this.type, required this.start, required this.end});
+  Duration get duration => end.difference(start);
 }
 
 

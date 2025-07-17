@@ -15,10 +15,11 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 
 class HomeScreen extends StatefulWidget {
-  final void Function(ThemeMode, {String custom})? onThemeModeChanged;
+  final void Function(ThemeMode, {String custom, String? fontFamily})? onThemeModeChanged;
   final ThemeMode? currentThemeMode;
   final String? customTheme;
-  const HomeScreen({Key? key, this.onThemeModeChanged, this.currentThemeMode, this.customTheme}) : super(key: key);
+  final String? fontFamily;
+  const HomeScreen({Key? key, this.onThemeModeChanged, this.currentThemeMode, this.customTheme, this.fontFamily}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -124,6 +125,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     }
                   }
                   break;
+                case 'smart_reminder':
+                  await provider.triggerSmartReminder();
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Smart reminder triggered!')),
+                    );
+                  }
+                  break;
+                default:
+                  if (value.toString().startsWith('font_')) {
+                    final font = value.toString().substring(5);
+                    widget.onThemeModeChanged?.call(widget.currentThemeMode ?? ThemeMode.system, custom: widget.customTheme ?? 'default', fontFamily: font);
+                  }
+                  break;
               }
             },
             itemBuilder: (context) => [
@@ -222,6 +237,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
+              const PopupMenuDivider(),
+              PopupMenuItem(
+                enabled: false,
+                child: Text('Font', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+              ...AppConstants.fontFamilies.map((font) => PopupMenuItem(
+                value: 'font_$font',
+                child: Row(
+                  children: [
+                    Icon(Icons.font_download, color: widget.fontFamily == font ? Theme.of(context).colorScheme.primary : null),
+                    const SizedBox(width: 8),
+                    Text(font, style: TextStyle(fontFamily: font)),
+                  ],
+                ),
+              )),
             ],
           ),
           IconButton(

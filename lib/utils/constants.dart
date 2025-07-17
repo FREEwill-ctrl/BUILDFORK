@@ -64,6 +64,14 @@ class AppConstants {
   static const String notificationChannelName = 'Todo Notifications';
   static const String notificationChannelDescription =
       'Notifications for todo reminders';
+
+  static const List<String> fontFamilies = [
+    'Roboto',
+    'Montserrat',
+    'Lato',
+    'OpenSans',
+    'Poppins',
+  ];
 }
 
 class AppTheme {
@@ -158,4 +166,15 @@ class AppTheme {
       brightness: Brightness.light,
     ),
   );
+
+  static ThemeData customTheme(Color seedColor, String fontFamily) {
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: seedColor,
+        brightness: Brightness.light,
+      ),
+      fontFamily: fontFamily,
+    );
+  }
 }

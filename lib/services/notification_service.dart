@@ -233,4 +233,29 @@ class NotificationService {
       }
     }
   }
+
+  Future<void> scheduleSmartReminder(List<Todo> todos) async {
+    // Reminder untuk tugas yang sering terlambat
+    final overdueTodos = todos.where((t) => !t.isCompleted && t.dueDate != null && t.dueDate!.isBefore(DateTime.now())).toList();
+    for (final todo in overdueTodos) {
+      await showInstantNotification(
+        id: (todo.id ?? 0) + 10000,
+        title: 'Jangan lupa tugas!',
+        body: 'Tugas "${todo.title}" sering terlambat. Selesaikan segera!',
+      );
+    }
+    // Reminder adaptif: waktu rata-rata user menyelesaikan tugas
+    final completed = todos.where((t) => t.isCompleted && t.dueDate != null).toList();
+    if (completed.isNotEmpty) {
+      final avgHour = completed.map((t) => t.dueDate!.hour).reduce((a, b) => a + b) ~/ completed.length;
+      final now = DateTime.now();
+      final next = DateTime(now.year, now.month, now.day, avgHour, 0).add(const Duration(days: 1));
+      await scheduleNotification(
+        id: 99999,
+        title: 'Waktu produktifmu!',
+        body: 'Ini waktu terbaikmu menyelesaikan tugas. Yuk lanjutkan!',
+        scheduledDate: next,
+      );
+    }
+  }
 }

@@ -32,6 +32,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   ThemeMode _themeMode = ThemeMode.system;
   String _customTheme = 'default';
+  String _fontFamily = 'Roboto';
 
   @override
   void initState() {
@@ -59,6 +60,7 @@ class _MyAppState extends State<MyApp> {
     final prefs = await SharedPreferences.getInstance();
     final mode = prefs.getString('theme_mode') ?? 'system';
     final custom = prefs.getString('custom_theme') ?? 'default';
+    final font = prefs.getString('font_family') ?? 'Roboto';
     setState(() {
       if (mode == 'light') {
         _themeMode = ThemeMode.light;
@@ -68,25 +70,29 @@ class _MyAppState extends State<MyApp> {
         _themeMode = ThemeMode.system;
       }
       _customTheme = custom;
+      _fontFamily = font;
     });
   }
 
-  Future<void> setThemeMode(ThemeMode mode, {String custom = 'default'}) async {
+  Future<void> setThemeMode(ThemeMode mode, {String custom = 'default', String? fontFamily}) async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _themeMode = mode;
       _customTheme = custom;
+      if (fontFamily != null) _fontFamily = fontFamily;
     });
     await prefs.setString('theme_mode',
         mode == ThemeMode.light ? 'light' : mode == ThemeMode.dark ? 'dark' : 'system');
     await prefs.setString('custom_theme', custom);
+    if (fontFamily != null) await prefs.setString('font_family', fontFamily);
   }
 
   ThemeData _getTheme() {
-    if (_customTheme == 'blue') return AppTheme.blueTheme;
-    if (_customTheme == 'green') return AppTheme.greenTheme;
-    if (_customTheme == 'red') return AppTheme.redTheme;
-    return AppTheme.lightTheme;
+    Color color = AppConstants.primaryColor;
+    if (_customTheme == 'blue') color = Colors.blue;
+    if (_customTheme == 'green') color = Colors.green;
+    if (_customTheme == 'red') color = Colors.red;
+    return AppTheme.customTheme(color, _fontFamily);
   }
 
   @override
@@ -103,7 +109,7 @@ class _MyAppState extends State<MyApp> {
         theme: _getTheme(),
         darkTheme: AppTheme.darkTheme,
         themeMode: _themeMode,
-        home: HomeScreen(onThemeModeChanged: setThemeMode, currentThemeMode: _themeMode, customTheme: _customTheme),
+        home: HomeScreen(onThemeModeChanged: setThemeMode, currentThemeMode: _themeMode, customTheme: _customTheme, fontFamily: _fontFamily),
       ),
     );
   }

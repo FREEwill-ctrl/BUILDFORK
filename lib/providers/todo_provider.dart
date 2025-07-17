@@ -233,4 +233,8 @@ class TodoProvider with ChangeNotifier {
     }
     return imported;
   }
+
+  Future<void> triggerSmartReminder() async {
+    await _notificationService.scheduleSmartReminder(_todos);
+  }
 }
