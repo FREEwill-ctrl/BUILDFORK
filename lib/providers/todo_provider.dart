@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import '../models/todo_model.dart';
-import '../models/todo_model.dart' show ChecklistItem;
 import '../services/database_service.dart';
 import '../services/notification_service.dart';
 import 'package:csv/csv.dart';
@@ -197,8 +196,8 @@ class TodoProvider with ChangeNotifier {
         todo.dueDate?.millisecondsSinceEpoch ?? '',
         todo.priority.index,
         todo.isCompleted ? 1 : 0,
-        (todo.attachments ?? []).join('|'),
-        (todo.checklist != null && todo.checklist is List<ChecklistItem>) ? ChecklistItem.encodeList(todo.checklist) : '',
+        (todo.attachments).join('|'),
+        ChecklistItem.encodeList(todo.checklist),
         todo.theme ?? '',
       ])
     ];
@@ -224,7 +223,6 @@ class TodoProvider with ChangeNotifier {
           dueDate: row[4] != '' ? DateTime.fromMillisecondsSinceEpoch(int.tryParse(row[4].toString()) ?? 0) : null,
           priority: Priority.values[int.tryParse(row[5].toString()) ?? 1],
           isCompleted: row[6] == 1,
-          // attachments, checklist, theme tidak dikirim karena tidak ada di konstruktor model lama
         );
         await addTodo(todo);
         imported++;
