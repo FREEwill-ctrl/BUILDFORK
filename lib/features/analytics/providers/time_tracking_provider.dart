@@ -179,7 +179,7 @@ class TimeTrackingProvider extends ChangeNotifier {
       }
     }
     // Clamp to 1.0
-    result.updateAll((k, v) => v > 1.0 ? 1.0 : v.toDouble());
+    result.updateAll((k, v) => v > 1.0 ? 1.0 : (v is num ? v.toDouble() : v));
     _heatmapCache = result;
     _heatmapCacheTime = DateTime.now();
     return result;
