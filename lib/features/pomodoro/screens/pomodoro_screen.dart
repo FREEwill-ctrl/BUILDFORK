@@ -42,13 +42,13 @@ class PomodoroScreen extends StatelessWidget {
             int totalSeconds;
             switch (provider.sessionType) {
               case SessionType.pomodoro:
-                totalSeconds = PomodoroProvider.pomodoroDuration;
+                totalSeconds = provider.pomodoroMinutes * 60;
                 break;
               case SessionType.shortBreak:
-                totalSeconds = PomodoroProvider.shortBreakDuration;
+                totalSeconds = provider.shortBreakMinutes * 60;
                 break;
               case SessionType.longBreak:
-                totalSeconds = PomodoroProvider.longBreakDuration;
+                totalSeconds = provider.longBreakMinutes * 60;
                 break;
             }
             double progress = 1 - (provider.secondsRemaining / totalSeconds);
