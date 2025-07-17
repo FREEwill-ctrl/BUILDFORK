@@ -100,6 +100,7 @@ class PomodoroProvider with ChangeNotifier {
       notificationTitle = 'Time to Focus!';
       notificationBody = 'Break is over. Start your next Pomodoro.';
     }
+    print('Pomodoro session ended. Showing notification: $notificationTitle - $notificationBody');
     NotificationService().showPomodoroNotification(id: 0, title: notificationTitle, body: notificationBody);
     startTimer(); // Automatically start next session
   }

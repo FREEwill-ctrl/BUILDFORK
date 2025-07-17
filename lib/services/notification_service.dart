@@ -34,6 +34,48 @@ class NotificationService {
       initializationSettings,
       onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
     );
+
+    // Create notification channels for Android
+    await _createNotificationChannels();
+  }
+
+  Future<void> _createNotificationChannels() async {
+    try {
+      print('Creating notification channels...');
+      
+      // Create Pomodoro notification channel
+      const fln.AndroidNotificationChannel pomodoroChannel = fln.AndroidNotificationChannel(
+        'pomodoro_channel',
+        'Pomodoro Notifications',
+        description: 'Notifications for Pomodoro timer',
+        importance: fln.Importance.max,
+        playSound: true,
+        sound: fln.RawResourceAndroidNotificationSound('bell_notification'),
+      );
+
+      await _flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<fln.AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(pomodoroChannel);
+
+      print('Pomodoro notification channel created successfully');
+
+      // Create Todo notification channel
+      const fln.AndroidNotificationChannel todoChannel = fln.AndroidNotificationChannel(
+        'todo_channel',
+        'Todo Notifications',
+        description: 'Notifications for todo reminders',
+        importance: fln.Importance.max,
+        playSound: true,
+      );
+
+      await _flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<fln.AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(todoChannel);
+
+      print('Todo notification channel created successfully');
+    } catch (e) {
+      print('Error creating notification channels: $e');
+    }
   }
 
   void _onDidReceiveNotificationResponse(fln.NotificationResponse response) {
@@ -127,24 +169,36 @@ class NotificationService {
     required String title,
     required String body,
   }) async {
-    final fln.AndroidNotificationDetails androidPlatformChannelSpecifics =
-        fln.AndroidNotificationDetails(
-      'pomodoro_channel',
-      'Pomodoro Notifications',
-      channelDescription: 'Notifications for Pomodoro timer',
-      importance: fln.Importance.max,
-      priority: fln.Priority.high,
-      sound: const fln.RawResourceAndroidNotificationSound('bell_notification'),
-    );
+    try {
+      print('Showing Pomodoro notification: $title - $body');
+      
+      final fln.AndroidNotificationDetails androidPlatformChannelSpecifics =
+          fln.AndroidNotificationDetails(
+        'pomodoro_channel',
+        'Pomodoro Notifications',
+        channelDescription: 'Notifications for Pomodoro timer',
+        importance: fln.Importance.max,
+        priority: fln.Priority.high,
+        playSound: true,
+        sound: const fln.RawResourceAndroidNotificationSound('bell_notification'),
+        enableVibration: true,
+        enableLights: true,
+        channelShowBadge: true,
+      );
 
-    final fln.NotificationDetails platformChannelSpecifics =
-        fln.NotificationDetails(android: androidPlatformChannelSpecifics);
+      final fln.NotificationDetails platformChannelSpecifics =
+          fln.NotificationDetails(android: androidPlatformChannelSpecifics);
 
-    await _flutterLocalNotificationsPlugin.show(
-      id,
-      title,
-      body,
-      platformChannelSpecifics,
-    );
+      await _flutterLocalNotificationsPlugin.show(
+        id,
+        title,
+        body,
+        platformChannelSpecifics,
+      );
+      
+      print('Pomodoro notification sent successfully');
+    } catch (e) {
+      print('Error showing Pomodoro notification: $e');
+    }
   }
 }
