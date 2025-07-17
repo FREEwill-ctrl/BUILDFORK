@@ -4,7 +4,7 @@ import '../models/todo_model.dart';
 import '../providers/todo_provider.dart';
 import '../../../shared/constants.dart';
 import '../widgets/task_card.dart';
-import '../widgets/stats_card.dart';
+import '../../stats/widgets/stats_card.dart';
 import '../widgets/priority_chip.dart';
 import '../../../shared/celebration_widget.dart';
 import 'add_task_screen.dart';

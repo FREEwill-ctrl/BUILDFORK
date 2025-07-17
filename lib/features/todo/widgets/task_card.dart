@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/todo_model.dart';
-import '../utils/constants.dart';
+import '../../../shared/constants.dart';
 import 'priority_chip.dart';
 
 class TaskCard extends StatelessWidget {

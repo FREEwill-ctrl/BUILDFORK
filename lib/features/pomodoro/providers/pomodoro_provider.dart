@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import '../services/notification_service.dart';
+import '../../../shared/notification_service.dart';
 
 enum PomodoroState {
   initial,

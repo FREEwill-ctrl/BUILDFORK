@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/todo_model.dart';
-import '../utils/constants.dart';
+import '../../../shared/constants.dart';
 
 class PriorityChip extends StatelessWidget {
   final Priority priority;
