@@ -9,6 +9,28 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
+final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
+Future<void> scheduleNotification(Todo todo) async {
+  if (todo.reminder == null) return;
+  const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+    'todo_reminder', 'Todo Reminder',
+    channelDescription: 'Pengingat todo',
+    importance: Importance.max,
+    priority: Priority.high,
+  );
+  const NotificationDetails details = NotificationDetails(android: androidDetails);
+  await _notifications.zonedSchedule(
+    todo.hashCode,
+    'Pengingat Todo',
+    todo.title,
+    tz.TZDateTime.from(todo.reminder!, tz.local),
+    details,
+    androidAllowWhileIdle: true,
+    uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+    matchDateTimeComponents: DateTimeComponents.dateAndTime,
+  );
+}
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -30,28 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
     'Prioritas',
     'Status',
   ];
-
-  final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
-  Future<void> scheduleNotification(Todo todo) async {
-    if (todo.reminder == null) return;
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'todo_reminder', 'Todo Reminder',
-      channelDescription: 'Pengingat todo',
-      importance: Importance.max,
-      priority: Priority.high,
-    );
-    const NotificationDetails details = NotificationDetails(android: androidDetails);
-    await _notifications.zonedSchedule(
-      todo.hashCode,
-      'Pengingat Todo',
-      todo.title,
-      tz.TZDateTime.from(todo.reminder!, tz.local),
-      details,
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.dateAndTime,
-    );
-  }
 
   @override
   void initState() {
