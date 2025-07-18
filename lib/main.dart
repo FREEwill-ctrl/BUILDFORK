@@ -7,6 +7,8 @@ import 'features/todo/screens/home_screen.dart';
 import 'features/pomodoro/screens/pomodoro_screen.dart';
 import 'features/analytics/providers/time_tracking_provider.dart';
 import 'features/analytics/screens/analytics_dashboard.dart';
+import 'features/todo/screens/onboarding_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // ThemeProvider sudah ada di app_theme.dart
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -35,10 +37,44 @@ class TodoModularApp extends StatelessWidget {
           darkTheme: AppTheme.darkTheme,
           themeMode: themeProvider.themeMode,
           navigatorKey: navigatorKey,
-          home: const MainTabScreen(),
+          home: _RootScreen(),
         ),
       ),
     );
+  }
+}
+
+class _RootScreen extends StatefulWidget {
+  @override
+  State<_RootScreen> createState() => _RootScreenState();
+}
+
+class _RootScreenState extends State<_RootScreen> {
+  bool _loading = true;
+  bool _showOnboarding = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkOnboarding();
+  }
+
+  Future<void> _checkOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
+    final done = prefs.getBool('onboarding_done') ?? false;
+    setState(() {
+      _showOnboarding = !done;
+      _loading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_loading) return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    if (_showOnboarding) {
+      return OnboardingScreen(onFinish: () => setState(() => _showOnboarding = false));
+    }
+    return MainTabScreen();
   }
 }
 

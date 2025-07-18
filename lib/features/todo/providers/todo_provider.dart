@@ -91,6 +91,7 @@ class TodoProvider with ChangeNotifier {
         pomodoroSessionsCompleted: e['pomodoroSessionsCompleted'] ?? 0,
         productivityScore: (e['productivityScore'] ?? 0.0).toDouble(),
         status: e['status'] ?? 'notStarted',
+        reminder: e['reminder'] != null ? DateTime.tryParse(e['reminder']) : null,
       )));
       notifyListeners();
     }
@@ -117,6 +118,7 @@ class TodoProvider with ChangeNotifier {
       'pomodoroSessionsCompleted': e.pomodoroSessionsCompleted,
       'productivityScore': e.productivityScore,
       'status': e.status,
+      'reminder': e.reminder?.toIso8601String(),
     }).toList());
     await prefs.setString('todos', data);
   }

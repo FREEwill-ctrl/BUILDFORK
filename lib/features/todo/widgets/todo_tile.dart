@@ -130,9 +130,14 @@ class TodoTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (onEdit != null)
-              IconButton(icon: const Icon(Icons.edit), onPressed: onEdit),
+              IconButton(icon: const Icon(Icons.edit), onPressed: onEdit, tooltip: 'Edit'),
             if (onDelete != null)
-              IconButton(icon: const Icon(Icons.delete), onPressed: onDelete),
+              IconButton(icon: const Icon(Icons.delete), onPressed: onDelete, tooltip: 'Hapus'),
+            Checkbox(
+              value: todo.isCompleted,
+              onChanged: (_) => onToggle?.call(),
+              tooltip: 'Tandai Selesai',
+            ),
           ],
         ),
       ),

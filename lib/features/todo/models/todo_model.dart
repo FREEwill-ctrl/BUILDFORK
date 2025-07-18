@@ -32,6 +32,7 @@ class Todo {
   final int pomodoroSessionsCompleted;
   final double productivityScore;
   final String status;
+  final DateTime? reminder;
 
   Todo({
     this.id,
@@ -54,6 +55,7 @@ class Todo {
     this.pomodoroSessionsCompleted = 0,
     this.productivityScore = 0.0,
     this.status = 'notStarted',
+    this.reminder,
   });
 
   Todo copyWith({
@@ -76,6 +78,7 @@ class Todo {
     int? pomodoroSessionsCompleted,
     double? productivityScore,
     String? status,
+    DateTime? reminder,
   }) {
     return Todo(
       id: id ?? this.id,
@@ -97,6 +100,7 @@ class Todo {
       pomodoroSessionsCompleted: pomodoroSessionsCompleted ?? this.pomodoroSessionsCompleted,
       productivityScore: productivityScore ?? this.productivityScore,
       status: status ?? this.status,
+      reminder: reminder ?? this.reminder,
     );
   }
 

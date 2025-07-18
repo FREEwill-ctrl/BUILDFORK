@@ -5,6 +5,8 @@ import '../models/todo_model.dart';
 import '../widgets/todo_tile.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:todo_modular/shared/app_theme.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,6 +21,52 @@ class _HomeScreenState extends State<HomeScreen> {
   EisenhowerPriority? _selectedPriority;
   String _searchQuery = '';
   String _statusFilter = 'Semua';
+  String _sortBy = 'Tanggal Dibuat';
+
+  List<String> get _sortOptions => [
+    'Tanggal Dibuat',
+    'Tanggal Tenggat',
+    'Prioritas',
+    'Status',
+  ];
+
+  final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
+
+  Future<void> _scheduleNotification(Todo todo) async {
+    if (todo.reminder == null) return;
+    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+      'todo_reminder', 'Todo Reminder',
+      channelDescription: 'Pengingat todo',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    const NotificationDetails details = NotificationDetails(android: androidDetails);
+    await _notifications.zonedSchedule(
+      todo.hashCode,
+      'Pengingat Todo',
+      todo.title,
+      tz.TZDateTime.from(todo.reminder!, tz.local),
+      details,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.dateAndTime,
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() =>
+      Provider.of<TodoProvider>(context, listen: false).loadTodos()
+    );
+    _initNotifications();
+  }
+
+  Future<void> _initNotifications() async {
+    const AndroidInitializationSettings androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const InitializationSettings initSettings = InitializationSettings(android: androidInit);
+    await _notifications.initialize(initSettings);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,6 +168,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                   onChanged: (val) => setState(() => _statusFilter = val!),
                 ),
+                const SizedBox(width: 8),
+                DropdownButton<String>(
+                  value: _sortBy,
+                  items: _sortOptions.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                  onChanged: (val) => setState(() => _sortBy = val!),
+                ),
               ],
             ),
           ),
@@ -138,6 +192,25 @@ class _HomeScreenState extends State<HomeScreen> {
                     (_statusFilter == 'Belum Selesai' && !todo.isCompleted);
                   return matchSearch && matchStatus;
                 }).toList();
+
+                // Sorting
+                filteredTodos.sort((a, b) {
+                  switch (_sortBy) {
+                    case 'Tanggal Dibuat':
+                      return b.createdAt.compareTo(a.createdAt);
+                    case 'Tanggal Tenggat':
+                      if (a.dueDate == null && b.dueDate == null) return 0;
+                      if (a.dueDate == null) return 1;
+                      if (b.dueDate == null) return -1;
+                      return a.dueDate!.compareTo(b.dueDate!);
+                    case 'Prioritas':
+                      return a.priority.index.compareTo(b.priority.index);
+                    case 'Status':
+                      return a.isCompleted == b.isCompleted ? 0 : (a.isCompleted ? 1 : -1);
+                    default:
+                      return 0;
+                  }
+                });
                 return filteredTodos.isEmpty
                   ? Center(child: Text('Belum ada todo.'))
                   : ListView.builder(
@@ -213,6 +286,7 @@ class _AddTodoDialogState extends State<_AddTodoDialog> {
   final _descController = TextEditingController();
   DateTime? _dueDate;
   EisenhowerPriority? _priority = EisenhowerPriority.urgentImportant;
+  DateTime? _reminder;
 
   @override
   Widget build(BuildContext context) {
@@ -254,6 +328,25 @@ class _AddTodoDialogState extends State<_AddTodoDialog> {
             onChanged: (val) => setState(() => _priority = val),
             decoration: const InputDecoration(labelText: 'Prioritas'),
           ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              const Text('Pengingat: '),
+              Text(_reminder == null ? '-' : '${_reminder!.day}/${_reminder!.month}/${_reminder!.year}'),
+              IconButton(
+                icon: const Icon(Icons.calendar_today),
+                onPressed: () async {
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: _reminder ?? DateTime.now(),
+                    firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                    lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+                  );
+                  if (picked != null) setState(() => _reminder = picked);
+                },
+              ),
+            ],
+          ),
         ],
       ),
       actions: [
@@ -277,19 +370,22 @@ class _AddTodoDialogState extends State<_AddTodoDialog> {
               );
               return;
             }
-            Provider.of<TodoProvider>(context, listen: false).addTodo(
-              Todo(
-                title: title,
-                description: desc,
-                createdAt: DateTime.now(),
-                dueDate: _dueDate,
-                priority: _priority!,
-              ),
+            final todo = Todo(
+              title: title,
+              description: desc,
+              createdAt: DateTime.now(),
+              dueDate: _dueDate,
+              priority: _priority!,
+              reminder: _reminder,
             );
+            Provider.of<TodoProvider>(context, listen: false).addTodo(todo);
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Todo ditambahkan')),
             );
+            if (todo.reminder != null) {
+              _scheduleNotification(todo);
+            }
           },
           child: const Text('Save'),
         ),
@@ -311,6 +407,7 @@ class _EditTodoDialogState extends State<_EditTodoDialog> {
   late TextEditingController _descController;
   DateTime? _dueDate;
   EisenhowerPriority? _priority;
+  DateTime? _reminder;
 
   @override
   void initState() {
@@ -318,6 +415,7 @@ class _EditTodoDialogState extends State<_EditTodoDialog> {
     _descController = TextEditingController(text: widget.todo.description);
     _dueDate = widget.todo.dueDate;
     _priority = widget.todo.priority;
+    _reminder = widget.todo.reminder;
     super.initState();
   }
 
@@ -368,6 +466,25 @@ class _EditTodoDialogState extends State<_EditTodoDialog> {
             onChanged: (val) => setState(() => _priority = val),
             decoration: const InputDecoration(labelText: 'Prioritas'),
           ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              const Text('Pengingat: '),
+              Text(_reminder == null ? '-' : '${_reminder!.day}/${_reminder!.month}/${_reminder!.year}'),
+              IconButton(
+                icon: const Icon(Icons.calendar_today),
+                onPressed: () async {
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: _reminder ?? DateTime.now(),
+                    firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                    lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+                  );
+                  if (picked != null) setState(() => _reminder = picked);
+                },
+              ),
+            ],
+          ),
         ],
       ),
       actions: [
@@ -391,19 +508,24 @@ class _EditTodoDialogState extends State<_EditTodoDialog> {
               );
               return;
             }
+            final todo = widget.todo.copyWith(
+              title: title,
+              description: desc,
+              dueDate: _dueDate,
+              priority: _priority,
+              reminder: _reminder,
+            );
             Provider.of<TodoProvider>(context, listen: false).updateTodo(
               widget.index,
-              widget.todo.copyWith(
-                title: title,
-                description: desc,
-                dueDate: _dueDate,
-                priority: _priority,
-              ),
+              todo,
             );
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Todo diubah')),
             );
+            if (todo.reminder != null) {
+              _scheduleNotification(todo);
+            }
           },
           child: const Text('Save'),
         ),
