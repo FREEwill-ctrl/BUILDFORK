@@ -4,6 +4,7 @@ import '../../analytics/widgets/task_timer_widget.dart';
 import 'package:provider/provider.dart';
 import '../../analytics/providers/time_tracking_provider.dart';
 import 'dart:io';
+import '../screens/home_screen.dart' show detailHistoryDialog;
 
 class TodoTile extends StatelessWidget {
   final Todo todo;

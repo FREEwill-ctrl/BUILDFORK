@@ -32,8 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
-
-  Future<void> _scheduleNotification(Todo todo) async {
+  Future<void> scheduleNotification(Todo todo) async {
     if (todo.reminder == null) return;
     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       'todo_reminder', 'Todo Reminder',
@@ -504,7 +503,7 @@ class _AddTodoDialogState extends State<_AddTodoDialog> {
               SnackBar(content: Text('Todo ditambahkan')),
             );
             if (todo.reminder != null) {
-              _scheduleNotification(todo);
+              scheduleNotification(todo);
             }
           },
           child: const Text('Save'),
@@ -706,7 +705,7 @@ class _EditTodoDialogState extends State<_EditTodoDialog> {
               ),
             );
             if (todo.reminder != null) {
-              _scheduleNotification(todo);
+              scheduleNotification(todo);
             }
           },
           child: const Text('Save'),
