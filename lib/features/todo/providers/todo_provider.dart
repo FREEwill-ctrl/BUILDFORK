@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/todo_model.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
 
 class TodoProvider with ChangeNotifier {
   final List<Todo> _todos = [];
@@ -142,5 +143,64 @@ class TodoProvider with ChangeNotifier {
       'reminder': e.reminder?.toIso8601String(),
     }).toList());
     await prefs.setString('todos', data);
+  }
+
+  Future<void> exportTodos(String path) async {
+    final file = File(path);
+    final data = jsonEncode(_todos.map((e) => {
+      'id': e.id,
+      'title': e.title,
+      'description': e.description,
+      'createdAt': e.createdAt.toIso8601String(),
+      'dueDate': e.dueDate?.toIso8601String(),
+      'priority': e.priority.index,
+      'isCompleted': e.isCompleted,
+      'attachments': e.attachments,
+      'checklist': e.checklist.map((c) => {'text': c.text, 'isDone': c.isDone}).toList(),
+      'startTime': e.startTime?.toIso8601String(),
+      'endTime': e.endTime?.toIso8601String(),
+      'totalTimeSpent': e.totalTimeSpent.inMicroseconds,
+      'estimatedMinutes': e.estimatedMinutes,
+      'timeSessions': e.timeSessions,
+      'isTimerActive': e.isTimerActive,
+      'lastActiveTime': e.lastActiveTime?.toIso8601String(),
+      'pomodoroSessionsCompleted': e.pomodoroSessionsCompleted,
+      'productivityScore': e.productivityScore,
+      'status': e.status,
+      'reminder': e.reminder?.toIso8601String(),
+    }).toList());
+    await file.writeAsString(data);
+  }
+
+  Future<void> importTodos(String path) async {
+    final file = File(path);
+    if (!await file.exists()) return;
+    final data = await file.readAsString();
+    final List<dynamic> jsonList = jsonDecode(data);
+    _todos.clear();
+    _todos.addAll(jsonList.map((e) => Todo(
+      id: e['id'],
+      title: e['title'],
+      description: e['description'],
+      createdAt: DateTime.parse(e['createdAt']),
+      dueDate: e['dueDate'] != null ? DateTime.tryParse(e['dueDate']) : null,
+      priority: EisenhowerPriority.values[e['priority']],
+      isCompleted: e['isCompleted'] ?? false,
+      attachments: (e['attachments'] as List?)?.cast<String>() ?? [],
+      checklist: (e['checklist'] as List?)?.map((c) => ChecklistItem(text: c['text'], isDone: c['isDone'] ?? false)).toList() ?? [],
+      startTime: e['startTime'] != null ? DateTime.tryParse(e['startTime']) : null,
+      endTime: e['endTime'] != null ? DateTime.tryParse(e['endTime']) : null,
+      totalTimeSpent: e['totalTimeSpent'] != null ? Duration(microseconds: e['totalTimeSpent']) : Duration.zero,
+      estimatedMinutes: e['estimatedMinutes'] ?? 0,
+      timeSessions: e['timeSessions'] ?? [],
+      isTimerActive: e['isTimerActive'] ?? false,
+      lastActiveTime: e['lastActiveTime'] != null ? DateTime.tryParse(e['lastActiveTime']) : null,
+      pomodoroSessionsCompleted: e['pomodoroSessionsCompleted'] ?? 0,
+      productivityScore: (e['productivityScore'] ?? 0.0).toDouble(),
+      status: e['status'] ?? 'notStarted',
+      reminder: e['reminder'] != null ? DateTime.tryParse(e['reminder']) : null,
+    )));
+    saveTodos();
+    notifyListeners();
   }
 }
