@@ -56,25 +56,11 @@ class _MainTabScreenState extends State<MainTabScreen> {
     HomeScreen(),
     PomodoroScreen(),
     AnalyticsDashboard(),
-    // Placeholder for Neko-ray tab
-    Center(child: Text('Neko-ray')),
+    // Neko-ray launcher tab
+    NekoRayLauncherTab(),
   ];
 
-  static const MethodChannel _nekoRayChannel = MethodChannel('com.neko.ray/launcher');
-
-  void _onItemTapped(int index) async {
-    if (index == 3) {
-      // Panggil Neko-ray
-      try {
-        await _nekoRayChannel.invokeMethod('openNekoRay');
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal membuka Neko-ray: $e')),
-        );
-      }
-      // Jangan ubah tab, tetap di tab sebelumnya
-      return;
-    }
+  void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -105,6 +91,48 @@ class _MainTabScreenState extends State<MainTabScreen> {
             label: 'Neko-ray',
           ),
         ],
+      ),
+    );
+  }
+}
+
+class NekoRayLauncherTab extends StatelessWidget {
+  static const platform = MethodChannel('com.neko.ray/launcher');
+
+  Future<void> _launchNekoRay(BuildContext context) async {
+    try {
+      final bool launched = await platform.invokeMethod('launchNekoRay');
+      if (!launched) {
+        _showInstallDialog(context);
+      }
+    } catch (e) {
+      _showInstallDialog(context);
+    }
+  }
+
+  void _showInstallDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Neko-ray tidak ditemukan'),
+        content: const Text('Aplikasi Neko-ray belum terinstall. Silakan install Neko-ray terlebih dahulu.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ElevatedButton.icon(
+        icon: const Icon(Icons.open_in_new),
+        label: const Text('Buka Neko-ray'),
+        onPressed: () => _launchNekoRay(context),
       ),
     );
   }
