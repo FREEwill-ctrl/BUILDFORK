@@ -63,12 +63,12 @@ object NotificationService {
                     val down = 0.0 // V2RayServiceManager.queryStats(it, AppConfig.DOWNLINK)
                     if (up + down > 0) {
                         appendSpeedString(text, it, up / sinceLastQueryInSeconds, down / sinceLastQueryInSeconds)
-                        proxyTotal += up + down
+                        proxyTotal += (up + down).toLong()
                     }
                 }
                 val directUplink = 0.0 // V2RayServiceManager.queryStats(TAG_DIRECT, AppConfig.UPLINK)
                 val directDownlink = 0.0 // V2RayServiceManager.queryStats(TAG_DIRECT, AppConfig.DOWNLINK)
-                val zeroSpeed = proxyTotal == 0L && directUplink == 0L && directDownlink == 0L
+                val zeroSpeed = proxyTotal == 0L && directUplink == 0.0 && directDownlink == 0.0
                 if (!zeroSpeed || !lastZeroSpeed) {
                     if (proxyTotal == 0L) {
                         appendSpeedString(text, outboundTags?.firstOrNull(), 0.0, 0.0)
@@ -77,7 +77,7 @@ object NotificationService {
                         text, TAG_DIRECT, directUplink / sinceLastQueryInSeconds,
                         directDownlink / sinceLastQueryInSeconds
                     )
-                    updateNotification(text.toString(), proxyTotal, directDownlink + directUplink)
+                    updateNotification(text.toString(), proxyTotal, (directDownlink + directUplink).toLong())
                 }
                 lastZeroSpeed = zeroSpeed
                 lastQueryTime = queryTime

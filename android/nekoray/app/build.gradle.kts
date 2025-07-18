@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.aboutlibraries)
+    id("kotlin-kapt")
 }
 
 configurations {
@@ -213,4 +214,9 @@ dependencies {
     implementation(libs.fastadapter)
     implementation(libs.navigation.fragment)
     implementation(libs.picasso)
+
+    // Room Database
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
 }
