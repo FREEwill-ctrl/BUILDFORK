@@ -133,6 +133,14 @@ class TodoTile extends StatelessWidget {
               IconButton(icon: const Icon(Icons.edit), onPressed: onEdit, tooltip: 'Edit'),
             if (onDelete != null)
               IconButton(icon: const Icon(Icons.delete), onPressed: onDelete, tooltip: 'Hapus'),
+            IconButton(
+              icon: const Icon(Icons.history),
+              tooltip: 'Riwayat',
+              onPressed: () {
+                // ignore: use_build_context_synchronously
+                detailHistoryDialog(context, todo);
+              },
+            ),
             Checkbox(
               value: todo.isCompleted,
               onChanged: (_) => onToggle?.call(),

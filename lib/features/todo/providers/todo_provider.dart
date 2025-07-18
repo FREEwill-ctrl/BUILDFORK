@@ -8,6 +8,8 @@ class TodoProvider with ChangeNotifier {
   List<Todo> get todos => List.unmodifiable(_todos);
   Todo? _lastDeleted;
   int? _lastDeletedIndex;
+  final Map<int, List<Todo>> _editHistory = {};
+  int? _lastEditedIndex;
 
   void addTodo(Todo todo) {
     _todos.add(todo);
@@ -17,11 +19,30 @@ class TodoProvider with ChangeNotifier {
 
   void updateTodo(int index, Todo todo) {
     if (index >= 0 && index < _todos.length) {
+      final oldTodo = _todos[index];
+      // Simpan history edit
+      if (oldTodo.id != null) {
+        _editHistory.putIfAbsent(oldTodo.id!, () => []).add(oldTodo);
+      }
       _todos[index] = todo;
+      _lastEditedIndex = index;
       saveTodos();
       notifyListeners();
     }
   }
+
+  void undoEdit() {
+    if (_lastEditedIndex != null) {
+      final todo = _todos[_lastEditedIndex!];
+      if (todo.id != null && _editHistory.containsKey(todo.id!) && _editHistory[todo.id!]!.isNotEmpty) {
+        _todos[_lastEditedIndex!] = _editHistory[todo.id!]!.removeLast();
+        saveTodos();
+        notifyListeners();
+      }
+    }
+  }
+
+  List<Todo> getEditHistory(int todoId) => _editHistory[todoId] ?? [];
 
   void deleteTodo(int index) {
     if (index >= 0 && index < _todos.length) {

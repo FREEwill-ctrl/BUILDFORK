@@ -530,7 +530,15 @@ class _EditTodoDialogState extends State<_EditTodoDialog> {
             );
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Todo diubah')),
+              SnackBar(
+                content: Text('Todo diubah'),
+                action: SnackBarAction(
+                  label: 'Undo Edit',
+                  onPressed: () {
+                    Provider.of<TodoProvider>(context, listen: false).undoEdit();
+                  },
+                ),
+              ),
             );
             if (todo.reminder != null) {
               _scheduleNotification(todo);
@@ -554,4 +562,29 @@ String _motivasiRandom() {
   ];
   motivasi.shuffle();
   return motivasi.first;
+}
+
+// Tambahkan fungsi untuk menampilkan dialog riwayat perubahan
+detailHistoryDialog(BuildContext context, Todo todo) {
+  final history = Provider.of<TodoProvider>(context, listen: false).getEditHistory(todo.id ?? -1);
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Riwayat Perubahan'),
+      content: SizedBox(
+        width: 300,
+        child: history.isEmpty
+          ? Text('Belum ada riwayat perubahan.')
+          : ListView.builder(
+              shrinkWrap: true,
+              itemCount: history.length,
+              itemBuilder: (context, i) => ListTile(
+                title: Text(history[i].title),
+                subtitle: Text('Deskripsi: ${history[i].description}\nTenggat: ${history[i].dueDate ?? '-'}'),
+              ),
+            ),
+      ),
+      actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text('Tutup'))],
+    ),
+  );
 }
