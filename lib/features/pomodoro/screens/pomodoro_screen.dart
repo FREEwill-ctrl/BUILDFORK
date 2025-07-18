@@ -14,7 +14,7 @@ class PomodoroScreen extends StatelessWidget {
     final todos = todoProvider.todos;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pomodoro Timer'),
+        title: const Text('Pomodoro'),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -22,12 +22,6 @@ class PomodoroScreen extends StatelessWidget {
               context: context,
               builder: (context) => const _PomodoroSettingsDialog(),
             ),
-          ),
-          IconButton(
-            icon: Icon(Theme.of(context).brightness == Brightness.dark ? Icons.light_mode : Icons.dark_mode),
-            onPressed: () {
-              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-            },
           ),
         ],
       ),

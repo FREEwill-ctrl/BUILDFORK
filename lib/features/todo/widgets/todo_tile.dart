@@ -159,10 +159,12 @@ class TodoTile extends StatelessWidget {
                 detailHistoryDialog(context, todo);
               },
             ),
-            Checkbox(
-              value: todo.isCompleted,
-              onChanged: (_) => onToggle?.call(),
-              tooltip: 'Tandai Selesai',
+            Tooltip(
+              message: 'Tandai Selesai',
+              child: Checkbox(
+                value: todo.isCompleted,
+                onChanged: (_) => onToggle?.call(),
+              ),
             ),
           ],
         ),

@@ -8,6 +8,7 @@ import '../../todo/providers/todo_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:todo_modular/features/todo/models/todo_model.dart';
 
 class TimeTrackingProvider extends ChangeNotifier {
   Timer? _activeTimer;
