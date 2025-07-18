@@ -16,6 +16,10 @@
             android:id="@+id/routing_setting"
             android:icon="@drawable/ic_routing_24dp"
             android:title="@string/routing_settings_title" />
+        <item
+            android:id="@+id/nav_todo"
+            android:icon="@android:drawable/ic_menu_agenda"
+            android:title="Todo" />
     </group>
 
     <group android:id="@+id/group_id2">
