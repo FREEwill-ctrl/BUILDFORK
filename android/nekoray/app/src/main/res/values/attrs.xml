@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="colorMainBg" format="color"/>
+    <attr name="colorMainText" format="color"/>
+    <attr name="colorIcon" format="color" />
+    <attr name="colorText" format="color" />
+    <attr name="colorBg" format="color" />
+    <attr name="colorCard" format="color" />
+    <attr name="colorThemeUwu" format="color" />
+
+    <declare-styleable name="ExpandableView">
+        <attr name="expandable_visibilityMode">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+        <attr name="expandable_visibilityDuration" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="AboutLibrariesTheme">
+        <attr name="aboutLibrariesStyle" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="AboutLibraries">
+        <attr name="aboutLibrariesCardBackground" format="color|reference" />
+        <attr name="aboutLibrariesDescriptionTitle" format="color|reference" />
+        <attr name="aboutLibrariesDescriptionText" format="color|reference" />
+        <attr name="aboutLibrariesDescriptionDivider" format="color|reference" />
+        <attr name="aboutLibrariesOpenSourceTitle" format="color|reference" />
+        <attr name="aboutLibrariesOpenSourceText" format="color|reference" />
+        <attr name="aboutLibrariesOpenSourceTextVersion" format="color|reference" />
+        <attr name="aboutLibrariesSpecialButtonText" format="color|reference" />
+        <attr name="aboutLibrariesOpenSourceDivider" format="color|reference" />
+    </declare-styleable>
+</resources>

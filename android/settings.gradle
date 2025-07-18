@@ -23,4 +23,6 @@ plugins {
 }
 
 include ":app"
+include ':nekoray'
+project(':nekoray').projectDir = new File(rootDir, 'android/nekoray')
 

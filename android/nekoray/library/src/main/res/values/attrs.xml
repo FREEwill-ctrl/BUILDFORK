@@ -1,0 +1,99 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <declare-styleable name="BlurImageView">
+        <attr name="radius" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="Theme">
+        <attr name="changelogStyle" format="reference" />
+        <attr name="changelogWindowStyle" format="reference" />
+        <attr name="changelogTitleStyle" format="reference" />
+        <attr name="changelogHeaderTitleStyle" format="reference" />
+        <attr name="changelogHeaderDateStyle" format="reference" />
+        <attr name="changelogHeaderSummaryStyle" format="reference" />
+        <attr name="changelogBulletStyle" format="reference" />
+        <attr name="changelogTextStyle" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="WaveView">
+		<attr name="above_wave_color" format="color"/>
+		<attr name="blow_wave_color" format="color"/>
+		<attr name="progress" format="integer"/>
+        <attr name="wave_length" format="enum">
+            <enum name="large" value="1"/>
+            <enum name="middle" value="2"/>
+            <enum name="little" value="3"/>
+        </attr>
+        <attr name="wave_height" format="enum">
+            <enum name="large" value="1"/>
+            <enum name="middle" value="2"/>
+            <enum name="little" value="3"/>
+        </attr>
+        <attr name="wave_hz" format="enum">
+            <enum name="fast" value="1"/>
+            <enum name="normal" value="2"/>
+            <enum name="slow" value="3"/>
+        </attr>
+	</declare-styleable>
+
+	<declare-styleable name="Themes">
+		<attr name="waveViewStyle" format="reference"/>
+	</declare-styleable>
+
+    <attr name="NoInternet_Dialog_Pendulum_airplaneColor" format="color" />
+    <attr name="NoInternet_Dialog_Signal_airplaneColor" format="color" />
+    <attr name="NoInternet_Dialog_Signal_topBottomShade" format="reference" />
+    <attr name="NoInternet_Dialog_Signal_round" format="reference" />
+    <attr name="NoInternet_Dialog_Signal_cloudColorOne" format="reference" />
+    <attr name="NoInternet_Dialog_Signal_cloudColorTwo" format="reference" />
+    <attr name="NoInternet_Dialog_Signal_cloudColorThree" format="reference" />
+
+    <declare-styleable name="SwitchButton" tools:ignore="ResourceName">
+        <attr name="kswThumbDrawable" format="reference"/>
+        <attr name="kswThumbColor" format="color|reference"/>
+        <attr name="kswThumbMargin" format="dimension|reference"/>
+        <attr name="kswThumbMarginTop" format="dimension|reference"/>
+        <attr name="kswThumbMarginBottom" format="dimension|reference"/>
+        <attr name="kswThumbMarginLeft" format="dimension|reference"/>
+        <attr name="kswThumbMarginRight" format="dimension|reference"/>
+        <attr name="kswThumbWidth" format="dimension|reference"/>
+        <attr name="kswThumbHeight" format="dimension|reference"/>
+        <attr name="kswThumbRadius" format="dimension|reference"/>
+        <attr name="kswBackRadius" format="dimension|reference"/>
+        <attr name="kswBackDrawable" format="reference"/>
+        <attr name="kswBackColor" format="color|reference"/>
+        <attr name="kswFadeBack" format="boolean"/>
+        <attr name="kswThumbRangeRatio" format="float"/>
+        <attr name="kswAnimationDuration" format="integer"/>
+        <attr name="kswTintColor" format="color|reference"/>
+        <attr name="kswTextOn" format="string"/>
+        <attr name="kswTextOff" format="string"/>
+        <attr name="kswTextThumbInset" format="dimension"/>
+        <attr name="kswTextExtra" format="dimension"/>
+        <attr name="kswTextAdjust" format="dimension"/>
+    </declare-styleable>
+    
+    <declare-styleable name="CircleImageView">
+        <attr name="civ_border_width" format="dimension" />
+        <attr name="civ_border_color" format="color" />
+        <attr name="civ_border_overlay" format="boolean" />
+        <attr name="civ_circle_background_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="ImageSlider">
+        <attr name="iss_auto_cycle" format="boolean" />
+        <attr name="iss_corner_radius" format="integer" />
+        <attr name="iss_period" format="integer" />
+        <attr name="iss_delay" format="integer" />
+        <attr name="iss_placeholder" format="reference" />
+        <attr name="iss_error_image" format="reference" />
+        <attr name="iss_selected_dot" format="reference" />
+        <attr name="iss_unselected_dot" format="reference" />
+        <attr name="iss_title_background" format="reference" />
+        <attr name="iss_text_align" format="string"/>
+        <attr name="iss_indicator_align" format="string"/>
+        <attr name="iss_no_dots" format="boolean" />
+        <attr name="iss_text_color" format="string"/>
+    </declare-styleable>
+    
+    <attr name="colorThemeUwu" format="color" />
+</resources>
