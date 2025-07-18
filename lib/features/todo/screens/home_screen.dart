@@ -212,7 +212,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
                 });
                 return filteredTodos.isEmpty
-                  ? Center(child: Text('Belum ada todo.'))
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset('assets/empty.png', width: 120, height: 120, fit: BoxFit.contain),
+                          const SizedBox(height: 16),
+                          Text(_motivasiRandom(), style: Theme.of(context).textTheme.subtitle1, textAlign: TextAlign.center),
+                        ],
+                      ),
+                    )
                   : ListView.builder(
                       itemCount: filteredTodos.length,
                       itemBuilder: (context, index) {
@@ -532,4 +541,17 @@ class _EditTodoDialogState extends State<_EditTodoDialog> {
       ],
     );
   }
+}
+
+String _motivasiRandom() {
+  const motivasi = [
+    'Setiap langkah kecil adalah kemajuan!',
+    'Mulai sekarang, bukan nanti!',
+    'Fokus pada satu tugas, selesaikan dengan baik.',
+    'Produktivitas adalah kunci sukses.',
+    'Jangan tunda, lakukan sekarang!',
+    'Kamu pasti bisa menyelesaikannya!',
+  ];
+  motivasi.shuffle();
+  return motivasi.first;
 }
