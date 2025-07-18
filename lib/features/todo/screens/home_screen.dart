@@ -97,22 +97,53 @@ class _HomeScreenState extends State<HomeScreen> {
                 final todos = _selectedDay == null
                   ? provider.filterByPriority(_selectedPriority)
                   : provider.getTodosByDate(_selectedDay!).where((t) => _selectedPriority == null || t.priority == _selectedPriority).toList();
-                return ListView.builder(
-                  itemCount: todos.length,
-                  itemBuilder: (context, index) {
-                    final todo = todos[index];
-                    final todoIndex = provider.todos.indexOf(todo);
-                    return TodoTile(
-                      todo: todo,
-                      onDelete: () => provider.deleteTodo(todoIndex),
-                      onToggle: () => provider.toggleTodoStatus(todoIndex),
-                      onEdit: () => showDialog(
-                        context: context,
-                        builder: (context) => _EditTodoDialog(index: todoIndex, todo: todo),
-                      ),
+                return todos.isEmpty
+                  ? Center(child: Text('Belum ada todo.'))
+                  : ListView.builder(
+                      itemCount: todos.length,
+                      itemBuilder: (context, index) {
+                        final todo = todos[index];
+                        final todoIndex = provider.todos.indexOf(todo);
+                        return TodoTile(
+                          todo: todo,
+                          onDelete: () async {
+                            final confirm = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text('Konfirmasi'),
+                                content: Text('Hapus todo ini?'),
+                                actions: [
+                                  TextButton(onPressed: () => Navigator.pop(context, false), child: Text('Batal')),
+                                  TextButton(onPressed: () => Navigator.pop(context, true), child: Text('Hapus')),
+                                ],
+                              ),
+                            );
+                            if (confirm == true) {
+                              provider.deleteTodo(todoIndex);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Todo dihapus'),
+                                  action: SnackBarAction(
+                                    label: 'Undo',
+                                    onPressed: () => provider.undoDelete(),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          onToggle: () {
+                            provider.toggleTodoStatus(todoIndex);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(todo.isCompleted ? 'Todo dibatalkan' : 'Todo selesai')),
+                            );
+                          },
+                          onEdit: () => showDialog(
+                            context: context,
+                            builder: (context) => _EditTodoDialog(index: todoIndex, todo: todo),
+                          ),
+                        );
+                      },
                     );
-                  },
-                );
               },
             ),
           ),
@@ -193,18 +224,31 @@ class _AddTodoDialogState extends State<_AddTodoDialog> {
           onPressed: () {
             final title = _titleController.text.trim();
             final desc = _descController.text.trim();
-            if (title.isNotEmpty && _priority != null) {
-              Provider.of<TodoProvider>(context, listen: false).addTodo(
-                Todo(
-                  title: title,
-                  description: desc,
-                  createdAt: DateTime.now(),
-                  dueDate: _dueDate,
-                  priority: _priority!,
-                ),
+            if (title.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Judul tidak boleh kosong')),
               );
-              Navigator.pop(context);
+              return;
             }
+            if (_dueDate != null && _dueDate!.isBefore(DateTime.now().subtract(Duration(days: 1)))) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Tanggal tenggat tidak valid')),
+              );
+              return;
+            }
+            Provider.of<TodoProvider>(context, listen: false).addTodo(
+              Todo(
+                title: title,
+                description: desc,
+                createdAt: DateTime.now(),
+                dueDate: _dueDate,
+                priority: _priority!,
+              ),
+            );
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Todo ditambahkan')),
+            );
           },
           child: const Text('Save'),
         ),
@@ -294,18 +338,31 @@ class _EditTodoDialogState extends State<_EditTodoDialog> {
           onPressed: () {
             final title = _titleController.text.trim();
             final desc = _descController.text.trim();
-            if (title.isNotEmpty && _priority != null) {
-              Provider.of<TodoProvider>(context, listen: false).editTodo(
-                widget.index,
-                widget.todo.copyWith(
-                  title: title,
-                  description: desc,
-                  dueDate: _dueDate,
-                  priority: _priority,
-                ),
+            if (title.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Judul tidak boleh kosong')),
               );
-              Navigator.pop(context);
+              return;
             }
+            if (_dueDate != null && _dueDate!.isBefore(widget.todo.createdAt)) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Tanggal tenggat tidak valid')),
+              );
+              return;
+            }
+            Provider.of<TodoProvider>(context, listen: false).updateTodo(
+              widget.index,
+              widget.todo.copyWith(
+                title: title,
+                description: desc,
+                dueDate: _dueDate,
+                priority: _priority,
+              ),
+            );
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Todo diubah')),
+            );
           },
           child: const Text('Save'),
         ),

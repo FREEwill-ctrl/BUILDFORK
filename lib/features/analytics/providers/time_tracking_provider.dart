@@ -152,7 +152,7 @@ class TimeTrackingProvider extends ChangeNotifier {
       'Tidak Penting & Tidak Mendesak': 0,
     };
     for (final todo in todos) {
-      final key = todo.priorityLabel;
+      final key = Todo.getPriorityLabel(todo.priority);
       final time = getTaskTotalTime(todo.id.toString()).inMinutes.toDouble();
       if (result.containsKey(key)) {
         result[key] = result[key]! + time;

@@ -42,7 +42,7 @@ class TodoTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                (todo.priorityLabel.isNotEmpty ? todo.priorityLabel : '-'),
+                (Todo.getPriorityLabel(todo.priority).isNotEmpty ? Todo.getPriorityLabel(todo.priority) : '-'),
                 style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

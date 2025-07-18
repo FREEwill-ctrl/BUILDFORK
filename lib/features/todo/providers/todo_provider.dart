@@ -1,50 +1,53 @@
 import 'package:flutter/material.dart';
 import '../models/todo_model.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TodoProvider with ChangeNotifier {
   final List<Todo> _todos = [];
   List<Todo> get todos => List.unmodifiable(_todos);
+  Todo? _lastDeleted;
+  int? _lastDeletedIndex;
 
   void addTodo(Todo todo) {
-    _todos.add(todo.copyWith(priorityLabel: _priorityLabelFromEnum(todo.priority)));
+    _todos.add(todo);
+    saveTodos();
     notifyListeners();
   }
 
   void updateTodo(int index, Todo todo) {
     if (index >= 0 && index < _todos.length) {
       _todos[index] = todo;
+      saveTodos();
       notifyListeners();
     }
   }
 
   void deleteTodo(int index) {
     if (index >= 0 && index < _todos.length) {
+      _lastDeleted = _todos[index];
+      _lastDeletedIndex = index;
       _todos.removeAt(index);
+      saveTodos();
       notifyListeners();
+    }
+  }
+
+  void undoDelete() {
+    if (_lastDeleted != null && _lastDeletedIndex != null) {
+      _todos.insert(_lastDeletedIndex!, _lastDeleted!);
+      saveTodos();
+      notifyListeners();
+      _lastDeleted = null;
+      _lastDeletedIndex = null;
     }
   }
 
   void toggleTodoStatus(int index) {
     if (index >= 0 && index < _todos.length) {
       final todo = _todos[index];
-      _todos[index] = Todo(
-        id: todo.id,
-        title: todo.title,
-        description: todo.description,
-        createdAt: todo.createdAt,
-        dueDate: todo.dueDate,
-        priority: todo.priority,
-        isCompleted: !todo.isCompleted,
-        attachments: todo.attachments,
-        checklist: todo.checklist,
-      );
-      notifyListeners();
-    }
-  }
-
-  void editTodo(int index, Todo newTodo) {
-    if (index >= 0 && index < _todos.length) {
-      _todos[index] = newTodo.copyWith(priorityLabel: _priorityLabelFromEnum(newTodo.priority));
+      _todos[index] = todo.copyWith(isCompleted: !todo.isCompleted);
+      saveTodos();
       notifyListeners();
     }
   }
@@ -61,16 +64,60 @@ class TodoProvider with ChangeNotifier {
       todo.dueDate!.day == date.day).toList();
   }
 
-  String _priorityLabelFromEnum(EisenhowerPriority p) {
-    switch (p) {
-      case EisenhowerPriority.urgentImportant:
-        return 'Penting & Mendesak';
-      case EisenhowerPriority.importantNotUrgent:
-        return 'Penting & Tidak Mendesak';
-      case EisenhowerPriority.notImportantUrgent:
-        return 'Tidak Penting & Mendesak';
-      case EisenhowerPriority.notImportantNotUrgent:
-        return 'Tidak Penting & Tidak Mendesak';
+  // Persistence stub
+  Future<void> loadTodos() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString('todos');
+    if (data != null) {
+      final List<dynamic> jsonList = jsonDecode(data);
+      _todos.clear();
+      _todos.addAll(jsonList.map((e) => Todo(
+        id: e['id'],
+        title: e['title'],
+        description: e['description'],
+        createdAt: DateTime.parse(e['createdAt']),
+        dueDate: e['dueDate'] != null ? DateTime.tryParse(e['dueDate']) : null,
+        priority: EisenhowerPriority.values[e['priority']],
+        isCompleted: e['isCompleted'] ?? false,
+        attachments: (e['attachments'] as List?)?.cast<String>() ?? [],
+        checklist: [], // TODO: Implement checklist deserialization
+        startTime: e['startTime'] != null ? DateTime.tryParse(e['startTime']) : null,
+        endTime: e['endTime'] != null ? DateTime.tryParse(e['endTime']) : null,
+        totalTimeSpent: e['totalTimeSpent'] != null ? Duration(microseconds: e['totalTimeSpent']) : Duration.zero,
+        estimatedMinutes: e['estimatedMinutes'] ?? 0,
+        timeSessions: e['timeSessions'] ?? [],
+        isTimerActive: e['isTimerActive'] ?? false,
+        lastActiveTime: e['lastActiveTime'] != null ? DateTime.tryParse(e['lastActiveTime']) : null,
+        pomodoroSessionsCompleted: e['pomodoroSessionsCompleted'] ?? 0,
+        productivityScore: (e['productivityScore'] ?? 0.0).toDouble(),
+        status: e['status'] ?? 'notStarted',
+      )));
+      notifyListeners();
     }
+  }
+  Future<void> saveTodos() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = jsonEncode(_todos.map((e) => {
+      'id': e.id,
+      'title': e.title,
+      'description': e.description,
+      'createdAt': e.createdAt.toIso8601String(),
+      'dueDate': e.dueDate?.toIso8601String(),
+      'priority': e.priority.index,
+      'isCompleted': e.isCompleted,
+      'attachments': e.attachments,
+      // TODO: Implement checklist serialization
+      'startTime': e.startTime?.toIso8601String(),
+      'endTime': e.endTime?.toIso8601String(),
+      'totalTimeSpent': e.totalTimeSpent.inMicroseconds,
+      'estimatedMinutes': e.estimatedMinutes,
+      'timeSessions': e.timeSessions,
+      'isTimerActive': e.isTimerActive,
+      'lastActiveTime': e.lastActiveTime?.toIso8601String(),
+      'pomodoroSessionsCompleted': e.pomodoroSessionsCompleted,
+      'productivityScore': e.productivityScore,
+      'status': e.status,
+    }).toList());
+    await prefs.setString('todos', data);
   }
 }

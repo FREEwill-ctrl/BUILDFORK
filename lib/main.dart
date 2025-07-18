@@ -57,6 +57,14 @@ class _MainTabScreenState extends State<MainTabScreen> {
     AnalyticsDashboard(),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() =>
+      Provider.of<TodoProvider>(context, listen: false).loadTodos()
+    );
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
