@@ -23,6 +23,4 @@ plugins {
 }
 
 include ":app"
-include ':V2rayNG'
-project(':V2rayNG').projectDir = new File(rootDir, '../Neko-ray/V2rayNG')
 

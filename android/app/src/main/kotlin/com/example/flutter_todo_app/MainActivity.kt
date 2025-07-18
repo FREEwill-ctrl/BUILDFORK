@@ -11,8 +11,7 @@ class MainActivity: FlutterActivity() {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.neko.ray/launcher").setMethodCallHandler { call, result ->
             if (call.method == "openNekoRay") {
-                val intent = Intent()
-                intent.setClassName(this, "com.neko.v2ray.ui.MainActivity")
+                val intent = Intent(this, NekoRayActivity::class.java)
                 startActivity(intent)
                 result.success(null)
             } else {
