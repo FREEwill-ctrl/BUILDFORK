@@ -7,6 +7,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:todo_modular/shared/app_theme.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -298,6 +299,8 @@ class _AddTodoDialogState extends State<_AddTodoDialog> {
   DateTime? _reminder;
   List<ChecklistItem> _checklist = [];
   final _checklistController = TextEditingController();
+  stt.SpeechToText _speech = stt.SpeechToText();
+  bool _isListening = false;
 
   @override
   Widget build(BuildContext context) {
@@ -306,8 +309,68 @@ class _AddTodoDialogState extends State<_AddTodoDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          TextField(controller: _titleController, decoration: const InputDecoration(labelText: 'Title')),
-          TextField(controller: _descController, decoration: const InputDecoration(labelText: 'Description')),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _titleController,
+                  decoration: const InputDecoration(labelText: 'Title'),
+                ),
+              ),
+              IconButton(
+                icon: Icon(_isListening ? Icons.mic : Icons.mic_none),
+                tooltip: 'Isi judul dengan suara',
+                onPressed: () async {
+                  if (!_isListening) {
+                    bool available = await _speech.initialize();
+                    if (available) {
+                      setState(() => _isListening = true);
+                      _speech.listen(onResult: (val) {
+                        setState(() {
+                          _titleController.text = val.recognizedWords;
+                          _isListening = false;
+                        });
+                      });
+                    }
+                  } else {
+                    _speech.stop();
+                    setState(() => _isListening = false);
+                  }
+                },
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _descController,
+                  decoration: const InputDecoration(labelText: 'Description'),
+                ),
+              ),
+              IconButton(
+                icon: Icon(_isListening ? Icons.mic : Icons.mic_none),
+                tooltip: 'Isi deskripsi dengan suara',
+                onPressed: () async {
+                  if (!_isListening) {
+                    bool available = await _speech.initialize();
+                    if (available) {
+                      setState(() => _isListening = true);
+                      _speech.listen(onResult: (val) {
+                        setState(() {
+                          _descController.text = val.recognizedWords;
+                          _isListening = false;
+                        });
+                      });
+                    }
+                  } else {
+                    _speech.stop();
+                    setState(() => _isListening = false);
+                  }
+                },
+              ),
+            ],
+          ),
           const SizedBox(height: 8),
           Row(
             children: [
