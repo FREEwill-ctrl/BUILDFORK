@@ -14,13 +14,11 @@ import com.neko.v2ray.handler.V2rayConfigManager
 import com.neko.v2ray.util.MessageUtil
 import com.neko.v2ray.util.PluginUtil
 import com.neko.v2ray.util.Utils
-import go.Seq
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
-import libv2ray.Libv2ray
 import java.util.concurrent.Executors
 
 class V2RayTestService : Service() {
@@ -31,8 +29,8 @@ class V2RayTestService : Service() {
      */
     override fun onCreate() {
         super.onCreate()
-        Seq.setContext(this)
-        Libv2ray.initV2Env(Utils.userAssetPath(this), Utils.getDeviceIdForXUDPBaseKey())
+        // Seq.setContext(this)
+        // Libv2ray.initV2Env(Utils.userAssetPath(this), Utils.getDeviceIdForXUDPBaseKey())
     }
 
     /**

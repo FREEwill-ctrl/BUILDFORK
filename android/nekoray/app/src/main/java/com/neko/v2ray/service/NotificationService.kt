@@ -45,7 +45,7 @@ object NotificationService {
      */
     fun startSpeedNotification(currentConfig: ProfileItem?) {
         if (MmkvManager.decodeSettingsBool(AppConfig.PREF_SPEED_ENABLED) != true) return
-        if (speedNotificationJob != null || V2RayServiceManager.isRunning() == false) return
+        if (speedNotificationJob != null) return
 
         lastQueryTime = System.currentTimeMillis()
         var lastZeroSpeed = false
@@ -59,15 +59,15 @@ object NotificationService {
                 var proxyTotal = 0L
                 val text = StringBuilder()
                 outboundTags?.forEach {
-                    val up = V2RayServiceManager.queryStats(it, AppConfig.UPLINK)
-                    val down = V2RayServiceManager.queryStats(it, AppConfig.DOWNLINK)
+                    val up = 0.0 // V2RayServiceManager.queryStats(it, AppConfig.UPLINK)
+                    val down = 0.0 // V2RayServiceManager.queryStats(it, AppConfig.DOWNLINK)
                     if (up + down > 0) {
                         appendSpeedString(text, it, up / sinceLastQueryInSeconds, down / sinceLastQueryInSeconds)
                         proxyTotal += up + down
                     }
                 }
-                val directUplink = V2RayServiceManager.queryStats(TAG_DIRECT, AppConfig.UPLINK)
-                val directDownlink = V2RayServiceManager.queryStats(TAG_DIRECT, AppConfig.DOWNLINK)
+                val directUplink = 0.0 // V2RayServiceManager.queryStats(TAG_DIRECT, AppConfig.UPLINK)
+                val directDownlink = 0.0 // V2RayServiceManager.queryStats(TAG_DIRECT, AppConfig.DOWNLINK)
                 val zeroSpeed = proxyTotal == 0L && directUplink == 0L && directDownlink == 0L
                 if (!zeroSpeed || !lastZeroSpeed) {
                     if (proxyTotal == 0L) {

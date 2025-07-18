@@ -9,7 +9,7 @@ import com.neko.v2ray.R
 import com.neko.v2ray.extension.responseLength
 import com.neko.v2ray.util.HttpUtil
 import kotlinx.coroutines.isActive
-import libv2ray.Libv2ray
+// import libv2ray.Libv2ray
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
@@ -36,7 +36,8 @@ object SpeedtestManager {
 
     fun realPing(config: String): Long {
         return try {
-            Libv2ray.measureOutboundDelay(config, SettingsManager.getDelayTestUrl())
+            // Libv2ray.measureOutboundDelay(config, SettingsManager.getDelayTestUrl())
+            -1L // Comment all usage of Libv2ray
         } catch (e: Exception) {
             Log.d(AppConfig.ANG_PACKAGE, "realPing: $e")
             -1L
@@ -131,7 +132,7 @@ object SpeedtestManager {
     }
 
     fun getLibVersion(): String {
-        return Libv2ray.checkVersionX()
+        return "N/A" // Comment all usage of Libv2ray
     }
 
 }

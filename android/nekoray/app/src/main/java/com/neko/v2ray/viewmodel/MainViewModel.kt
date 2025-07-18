@@ -39,7 +39,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     //var keywordFilter: String = MmkvManager.MmkvManager.decodeSettingsString(AppConfig.CACHE_KEYWORD_FILTER, "")?:""
     var keywordFilter = ""
     val serversCache = mutableListOf<ServersCache>()
-    val isRunning by lazy { MutableLiveData<Boolean>() }
+    // val isRunning by lazy { MutableLiveData<Boolean>() }
     val updateListAction by lazy { MutableLiveData<Int>() }
     val updateTestResultAction by lazy { MutableLiveData<String>() }
     private val tcpingTestScope by lazy { CoroutineScope(Dispatchers.IO) }
@@ -49,7 +49,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      * `registerReceiver(Context, BroadcastReceiver, IntentFilter, int)`.
      */
     fun startListenBroadcast() {
-        isRunning.value = false
+        // isRunning.value = false
         val mFilter = IntentFilter(AppConfig.BROADCAST_ACTION_ACTIVITY)
         ContextCompat.registerReceiver(getApplication(), mMsgReceiver, mFilter, Utils.receiverFlags())
         MessageUtil.sendMsg2Service(getApplication(), AppConfig.MSG_REGISTER_CLIENT, "")
@@ -411,25 +411,25 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         override fun onReceive(ctx: Context?, intent: Intent?) {
             when (intent?.getIntExtra("key", 0)) {
                 AppConfig.MSG_STATE_RUNNING -> {
-                    isRunning.value = true
+                    // isRunning.value = true
                 }
 
                 AppConfig.MSG_STATE_NOT_RUNNING -> {
-                    isRunning.value = false
+                    // isRunning.value = false
                 }
 
                 AppConfig.MSG_STATE_START_SUCCESS -> {
                     getApplication<AngApplication>().toast(R.string.toast_services_success)
-                    isRunning.value = true
+                    // isRunning.value = true
                 }
 
                 AppConfig.MSG_STATE_START_FAILURE -> {
                     getApplication<AngApplication>().toast(R.string.toast_services_failure)
-                    isRunning.value = false
+                    // isRunning.value = false
                 }
 
                 AppConfig.MSG_STATE_STOP_SUCCESS -> {
-                    isRunning.value = false
+                    // isRunning.value = false
                 }
 
                 AppConfig.MSG_MEASURE_DELAY_SUCCESS -> {
