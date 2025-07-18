@@ -20,26 +20,22 @@ import com.neko.v2ray.handler.V2rayConfigManager
 import com.neko.v2ray.util.MessageUtil
 import com.neko.v2ray.util.PluginUtil
 import com.neko.v2ray.util.Utils
-import go.Seq
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import libv2ray.Libv2ray
-import libv2ray.V2RayPoint
-import libv2ray.V2RayVPNServiceSupportsSet
 import java.lang.ref.SoftReference
 
 object V2RayServiceManager {
 
-    private val v2rayPoint: V2RayPoint = Libv2ray.newV2RayPoint(V2RayCallback(), Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1)
+    // private val v2rayPoint: V2RayPoint = Libv2ray.newV2RayPoint(V2RayCallback(), Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1)
     private val mMsgReceive = ReceiveMessageHandler()
     private var currentConfig: ProfileItem? = null
 
     var serviceControl: SoftReference<ServiceControl>? = null
         set(value) {
             field = value
-            Seq.setContext(value?.get()?.getService()?.applicationContext)
-            Libv2ray.initV2Env(Utils.userAssetPath(value?.get()?.getService()), Utils.getDeviceIdForXUDPBaseKey())
+            // Seq.setContext(value?.get()?.getService()?.applicationContext)
+            // Libv2ray.initV2Env(Utils.userAssetPath(value?.get()?.getService()), Utils.getDeviceIdForXUDPBaseKey())
         }
 
     /**
@@ -81,7 +77,7 @@ object V2RayServiceManager {
      * Checks if the V2Ray service is running.
      * @return True if the service is running, false otherwise.
      */
-    fun isRunning() = v2rayPoint.isRunning
+    fun isRunning() = false // v2rayPoint.isRunning
 
     /**
      * Gets the name of the currently running server.
@@ -94,7 +90,7 @@ object V2RayServiceManager {
      * @param context The context from which the service is started.
      */
     private fun startContextService(context: Context) {
-        if (v2rayPoint.isRunning) return
+        if (false) return // v2rayPoint.isRunning
         val guid = MmkvManager.getSelectServer() ?: return
         val config = MmkvManager.decodeServerConfig(guid) ?: return
         if (config.configType != EConfigType.CUSTOM
@@ -130,7 +126,7 @@ object V2RayServiceManager {
         val service = getService() ?: return
         val guid = MmkvManager.getSelectServer() ?: return
         val config = MmkvManager.decodeServerConfig(guid) ?: return
-        if (v2rayPoint.isRunning) {
+        if (false) { // v2rayPoint.isRunning
             return
         }
         val result = V2rayConfigManager.getV2rayConfig(service, guid)
@@ -147,17 +143,17 @@ object V2RayServiceManager {
             Log.d(ANG_PACKAGE, e.toString())
         }
 
-        v2rayPoint.configureFileContent = result.content
-        v2rayPoint.domainName = result.domainPort
+        // v2rayPoint.configureFileContent = result.content
+        // v2rayPoint.domainName = result.domainPort
         currentConfig = config
 
         try {
-            v2rayPoint.runLoop(MmkvManager.decodeSettingsBool(AppConfig.PREF_PREFER_IPV6))
+            // v2rayPoint.runLoop(MmkvManager.decodeSettingsBool(AppConfig.PREF_PREFER_IPV6))
         } catch (e: Exception) {
             Log.d(ANG_PACKAGE, e.toString())
         }
 
-        if (v2rayPoint.isRunning) {
+        if (false) { // v2rayPoint.isRunning
             MessageUtil.sendMsg2UI(service, AppConfig.MSG_STATE_START_SUCCESS, "")
             NotificationService.showNotification(currentConfig)
 
@@ -174,10 +170,10 @@ object V2RayServiceManager {
     fun stopV2rayPoint() {
         val service = getService() ?: return
 
-        if (v2rayPoint.isRunning) {
+        if (false) { // v2rayPoint.isRunning
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    v2rayPoint.stopLoop()
+                    // v2rayPoint.stopLoop()
                 } catch (e: Exception) {
                     Log.d(ANG_PACKAGE, e.toString())
                 }
@@ -202,7 +198,7 @@ object V2RayServiceManager {
      * @return The statistics value.
      */
     fun queryStats(tag: String, link: String): Long {
-        return v2rayPoint.queryStats(tag, link)
+        return -1L // v2rayPoint.queryStats(tag, link)
     }
 
     /**
@@ -213,16 +209,16 @@ object V2RayServiceManager {
             val service = getService() ?: return@launch
             var time = -1L
             var errstr = ""
-            if (v2rayPoint.isRunning) {
+            if (false) { // v2rayPoint.isRunning
                 try {
-                    time = v2rayPoint.measureDelay(SettingsManager.getDelayTestUrl())
+                    // time = v2rayPoint.measureDelay(SettingsManager.getDelayTestUrl())
                 } catch (e: Exception) {
                     Log.d(ANG_PACKAGE, "measureV2rayDelay: $e")
                     errstr = e.message?.substringAfter("\":") ?: "empty message"
                 }
                 if (time == -1L) {
                     try {
-                        time = v2rayPoint.measureDelay(SettingsManager.getDelayTestUrl(true))
+                        // time = v2rayPoint.measureDelay(SettingsManager.getDelayTestUrl(true))
                     } catch (e: Exception) {
                         Log.d(ANG_PACKAGE, "measureV2rayDelay: $e")
                         errstr = e.message?.substringAfter("\":") ?: "empty message"
@@ -307,7 +303,7 @@ object V2RayServiceManager {
             val serviceControl = serviceControl?.get() ?: return
             when (intent?.getIntExtra("key", 0)) {
                 AppConfig.MSG_REGISTER_CLIENT -> {
-                    if (v2rayPoint.isRunning) {
+                    if (false) { // v2rayPoint.isRunning
                         MessageUtil.sendMsg2UI(serviceControl.getService(), AppConfig.MSG_STATE_RUNNING, "")
                     } else {
                         MessageUtil.sendMsg2UI(serviceControl.getService(), AppConfig.MSG_STATE_NOT_RUNNING, "")
