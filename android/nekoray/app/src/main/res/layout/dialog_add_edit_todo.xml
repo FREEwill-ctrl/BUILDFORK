@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <EditText
+        android:id="@+id/editTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Judul Todo"
+        android:maxLines="1"/>
+
+    <EditText
+        android:id="@+id/editDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Deskripsi"
+        android:minLines="2"
+        android:maxLines="4"/>
+
+    <!-- Checklist sederhana (opsional) -->
+    <EditText
+        android:id="@+id/editChecklist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Checklist (pisahkan dengan koma)"
+        android:maxLines="2"/>
+
+</LinearLayout>
