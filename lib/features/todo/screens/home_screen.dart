@@ -17,6 +17,8 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   EisenhowerPriority? _selectedPriority;
+  String _searchQuery = '';
+  String _statusFilter = 'Semua';
 
   @override
   Widget build(BuildContext context) {
@@ -91,18 +93,57 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+          // Search bar dan filter status
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Cari todo...',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      isDense: true,
+                      contentPadding: EdgeInsets.all(8),
+                    ),
+                    onChanged: (val) => setState(() => _searchQuery = val),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                DropdownButton<String>(
+                  value: _statusFilter,
+                  items: const [
+                    DropdownMenuItem(value: 'Semua', child: Text('Semua')),
+                    DropdownMenuItem(value: 'Selesai', child: Text('Selesai')),
+                    DropdownMenuItem(value: 'Belum Selesai', child: Text('Belum Selesai')),
+                  ],
+                  onChanged: (val) => setState(() => _statusFilter = val!),
+                ),
+              ],
+            ),
+          ),
           Expanded(
             child: Consumer<TodoProvider>(
               builder: (context, provider, _) {
                 final todos = _selectedDay == null
                   ? provider.filterByPriority(_selectedPriority)
                   : provider.getTodosByDate(_selectedDay!).where((t) => _selectedPriority == null || t.priority == _selectedPriority).toList();
-                return todos.isEmpty
+                final filteredTodos = todos.where((todo) {
+                  final matchSearch = _searchQuery.isEmpty ||
+                    todo.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                    todo.description.toLowerCase().contains(_searchQuery.toLowerCase());
+                  final matchStatus = _statusFilter == 'Semua' ||
+                    (_statusFilter == 'Selesai' && todo.isCompleted) ||
+                    (_statusFilter == 'Belum Selesai' && !todo.isCompleted);
+                  return matchSearch && matchStatus;
+                }).toList();
+                return filteredTodos.isEmpty
                   ? Center(child: Text('Belum ada todo.'))
                   : ListView.builder(
-                      itemCount: todos.length,
+                      itemCount: filteredTodos.length,
                       itemBuilder: (context, index) {
-                        final todo = todos[index];
+                        final todo = filteredTodos[index];
                         final todoIndex = provider.todos.indexOf(todo);
                         return TodoTile(
                           todo: todo,
