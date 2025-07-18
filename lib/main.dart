@@ -7,6 +7,7 @@ import 'features/todo/screens/home_screen.dart';
 import 'features/pomodoro/screens/pomodoro_screen.dart';
 import 'features/analytics/providers/time_tracking_provider.dart';
 import 'features/analytics/screens/analytics_dashboard.dart';
+import 'package:flutter/services.dart';
 // ThemeProvider sudah ada di app_theme.dart
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -55,9 +56,25 @@ class _MainTabScreenState extends State<MainTabScreen> {
     HomeScreen(),
     PomodoroScreen(),
     AnalyticsDashboard(),
+    // Placeholder for Neko-ray tab
+    Center(child: Text('Neko-ray')),
   ];
 
-  void _onItemTapped(int index) {
+  static const MethodChannel _nekoRayChannel = MethodChannel('com.neko.ray/launcher');
+
+  void _onItemTapped(int index) async {
+    if (index == 3) {
+      // Panggil Neko-ray
+      try {
+        await _nekoRayChannel.invokeMethod('openNekoRay');
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal membuka Neko-ray: $e')),
+        );
+      }
+      // Jangan ubah tab, tetap di tab sebelumnya
+      return;
+    }
     setState(() {
       _selectedIndex = index;
     });
@@ -82,6 +99,10 @@ class _MainTabScreenState extends State<MainTabScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.analytics),
             label: 'Analytics',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.extension),
+            label: 'Neko-ray',
           ),
         ],
       ),
