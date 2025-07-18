@@ -3,6 +3,7 @@ import '../models/todo_model.dart';
 import '../../analytics/widgets/task_timer_widget.dart';
 import 'package:provider/provider.dart';
 import '../../analytics/providers/time_tracking_provider.dart';
+import 'dart:io';
 
 class TodoTile extends StatelessWidget {
   final Todo todo;
@@ -104,7 +105,24 @@ class TodoTile extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 4),
                 child: Wrap(
                   spacing: 8,
-                  children: todo.attachments.map((file) => Chip(label: Text(file.split('/').last))).toList(),
+                  children: todo.attachments.map((file) {
+                    final isImage = file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png');
+                    return isImage
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: Image.file(
+                            File(file),
+                            width: 40,
+                            height: 40,
+                            fit: BoxFit.cover,
+                            errorBuilder: (c, e, s) => Icon(Icons.broken_image, size: 40),
+                          ),
+                        )
+                      : Chip(
+                          avatar: Icon(Icons.insert_drive_file),
+                          label: Text(file.split('/').last),
+                        );
+                  }).toList(),
                 ),
               ),
             // --- Task Timer Widget Integration ---
