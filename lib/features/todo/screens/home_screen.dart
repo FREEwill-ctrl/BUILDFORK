@@ -296,6 +296,8 @@ class _AddTodoDialogState extends State<_AddTodoDialog> {
   DateTime? _dueDate;
   EisenhowerPriority? _priority = EisenhowerPriority.urgentImportant;
   DateTime? _reminder;
+  List<ChecklistItem> _checklist = [];
+  final _checklistController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -356,6 +358,56 @@ class _AddTodoDialogState extends State<_AddTodoDialog> {
               ),
             ],
           ),
+          const SizedBox(height: 8),
+          const Divider(),
+          SizedBox(
+            height: 120,
+            child: ReorderableListView(
+              onReorder: (oldIndex, newIndex) {
+                setState(() {
+                  if (newIndex > oldIndex) newIndex--;
+                  final item = _checklist.removeAt(oldIndex);
+                  _checklist.insert(newIndex, item);
+                });
+              },
+              children: [
+                for (int i = 0; i < _checklist.length; i++)
+                  ListTile(
+                    key: ValueKey('check_$i'),
+                    title: Text(_checklist[i].text),
+                    leading: Checkbox(
+                      value: _checklist[i].isDone,
+                      onChanged: (val) => setState(() => _checklist[i] = ChecklistItem(text: _checklist[i].text, isDone: val ?? false)),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () => setState(() => _checklist.removeAt(i)),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _checklistController,
+                  decoration: InputDecoration(hintText: 'Tambah checklist...'),
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  if (_checklistController.text.trim().isNotEmpty) {
+                    setState(() {
+                      _checklist.add(ChecklistItem(text: _checklistController.text.trim()));
+                      _checklistController.clear();
+                    });
+                  }
+                },
+              ),
+            ],
+          ),
         ],
       ),
       actions: [
@@ -386,6 +438,7 @@ class _AddTodoDialogState extends State<_AddTodoDialog> {
               dueDate: _dueDate,
               priority: _priority!,
               reminder: _reminder,
+              checklist: _checklist,
             );
             Provider.of<TodoProvider>(context, listen: false).addTodo(todo);
             Navigator.pop(context);
@@ -417,6 +470,8 @@ class _EditTodoDialogState extends State<_EditTodoDialog> {
   DateTime? _dueDate;
   EisenhowerPriority? _priority;
   DateTime? _reminder;
+  List<ChecklistItem> _checklist = [];
+  final _checklistController = TextEditingController();
 
   @override
   void initState() {
@@ -425,6 +480,7 @@ class _EditTodoDialogState extends State<_EditTodoDialog> {
     _dueDate = widget.todo.dueDate;
     _priority = widget.todo.priority;
     _reminder = widget.todo.reminder;
+    _checklist = widget.todo.checklist;
     super.initState();
   }
 
@@ -494,6 +550,56 @@ class _EditTodoDialogState extends State<_EditTodoDialog> {
               ),
             ],
           ),
+          const SizedBox(height: 8),
+          const Divider(),
+          SizedBox(
+            height: 120,
+            child: ReorderableListView(
+              onReorder: (oldIndex, newIndex) {
+                setState(() {
+                  if (newIndex > oldIndex) newIndex--;
+                  final item = _checklist.removeAt(oldIndex);
+                  _checklist.insert(newIndex, item);
+                });
+              },
+              children: [
+                for (int i = 0; i < _checklist.length; i++)
+                  ListTile(
+                    key: ValueKey('check_$i'),
+                    title: Text(_checklist[i].text),
+                    leading: Checkbox(
+                      value: _checklist[i].isDone,
+                      onChanged: (val) => setState(() => _checklist[i] = ChecklistItem(text: _checklist[i].text, isDone: val ?? false)),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () => setState(() => _checklist.removeAt(i)),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _checklistController,
+                  decoration: InputDecoration(hintText: 'Tambah checklist...'),
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  if (_checklistController.text.trim().isNotEmpty) {
+                    setState(() {
+                      _checklist.add(ChecklistItem(text: _checklistController.text.trim()));
+                      _checklistController.clear();
+                    });
+                  }
+                },
+              ),
+            ],
+          ),
         ],
       ),
       actions: [
@@ -523,6 +629,7 @@ class _EditTodoDialogState extends State<_EditTodoDialog> {
               dueDate: _dueDate,
               priority: _priority,
               reminder: _reminder,
+              checklist: _checklist,
             );
             Provider.of<TodoProvider>(context, listen: false).updateTodo(
               widget.index,
