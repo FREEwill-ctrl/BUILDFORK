@@ -9,6 +9,7 @@ import 'features/analytics/providers/time_tracking_provider.dart';
 import 'features/analytics/screens/analytics_dashboard.dart';
 import 'features/todo/screens/onboarding_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'features/todo/screens/settings_screen.dart';
 // ThemeProvider sudah ada di app_theme.dart
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -33,8 +34,8 @@ class TodoModularApp extends StatelessWidget {
         builder: (context, themeProvider, _) => MaterialApp(
           title: 'Todo Modular',
           debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
+          theme: AppTheme.lightTheme(primary: themeProvider.primaryColor, fontScale: themeProvider.fontScale),
+          darkTheme: AppTheme.darkTheme(primary: themeProvider.primaryColor, fontScale: themeProvider.fontScale),
           themeMode: themeProvider.themeMode,
           navigatorKey: navigatorKey,
           home: _RootScreen(),
@@ -110,6 +111,19 @@ class _MainTabScreenState extends State<MainTabScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Todo Modular'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SettingsScreen()),
+              );
+            },
+          ),
+        ],
+      ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: SafeArea(
         child: BottomNavigationBar(
